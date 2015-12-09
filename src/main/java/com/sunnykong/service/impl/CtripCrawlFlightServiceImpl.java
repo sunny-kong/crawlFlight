@@ -1,47 +1,55 @@
 package com.sunnykong.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.service.CrawlFlightService;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.*;
-import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
-import sun.net.www.http.HttpClient;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by xj on 15-12-8.
  */
 public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
     @Override
-    public FlightInfo crawl(AirPortCity from, AirPortCity to, Date date) throws IOException {
+    public List<FlightInfo> crawl(AirPortCity from, AirPortCity to, Date date) throws IOException, ParseException {
         List<Header> headers = buildHeaders();
         CloseableHttpClient httpClient = HttpClients.custom().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36").setDefaultHeaders(headers).build();
         HttpGet httpGet = new HttpGet("http://flights.ctrip.com/domesticsearch/search/SearchFirstRouteFlights?DCity1=HET&ACity1=URC&SearchType=S&DDate1=2016-02-06&rk=9.41909585148096213724&CK=47D506EA463C9C7FCC1D96E8C2AEE345&r=0.3195956253403258627319");
         CloseableHttpResponse response = httpClient.execute(httpGet);
         HttpEntity entity = response.getEntity();
-        FlightInfo flightInfo = null;
+         List<FlightInfo> flightInfoList = new ArrayList<FlightInfo>();
         if (entity != null) {
-            flightInfo = new FlightInfo();
             String json = EntityUtils.toString(entity);
-            flightInfo.setInfo(json);
+            System.out.println(json);
+            ObjectMapper mapper = new ObjectMapper();
+            Map map = mapper.readValue(json, Map.class);
+           List fisList= (List)map.get("fis");
+
+            for (int i = 0; i < fisList.size(); i++) {
+                FlightInfo flightInfo = new FlightInfo();
+                flightInfo.setParentname("携程");
+                flightInfo.setDeparturecity(String.valueOf(((Map) fisList.get(i)).get("dpc")));
+                flightInfo.setLandingcity(String.valueOf(((Map) fisList.get(i)).get("apc")));
+                flightInfo.setFlightNo(String.valueOf(((Map) fisList.get(i)).get("fn")));
+                flightInfo.setDeparturetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(String.valueOf(((Map) fisList.get(i)).get("dt"))));
+                flightInfo.setLandingtime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(String.valueOf(((Map) fisList.get(i)).get("at"))));
+                flightInfo.setPrice(String.valueOf(((Map) fisList.get(i)).get("lp")));
+                flightInfoList.add(flightInfo);
+            }
             EntityUtils.consume(entity);
         }
-        return flightInfo;
+        return flightInfoList;
     }
 
     public List<Header> buildHeaders() {
