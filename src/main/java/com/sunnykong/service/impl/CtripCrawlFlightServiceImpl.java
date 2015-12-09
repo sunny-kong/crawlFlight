@@ -44,7 +44,7 @@ public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
                 flightInfo.setFlightNo(String.valueOf(((Map) fisList.get(i)).get("fn")));
                 flightInfo.setDeparturetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(String.valueOf(((Map) fisList.get(i)).get("dt"))));
                 flightInfo.setLandingtime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(String.valueOf(((Map) fisList.get(i)).get("at"))));
-                flightInfo.setPrice(String.valueOf(((Map) fisList.get(i)).get("lp")));
+                flightInfo.setPrice(Double.parseDouble(String.valueOf(((Map) fisList.get(i)).get("lp"))));
                 flightInfoList.add(flightInfo);
             }
             EntityUtils.consume(entity);

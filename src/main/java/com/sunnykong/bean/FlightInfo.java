@@ -9,32 +9,13 @@ import java.util.Date;
 public class FlightInfo {
     protected String parentname;
     protected String flightNo;
-/*    protected String departuretime;
-    protected String landingtime;*/
     protected Date departuretime;
     protected Date landingtime;
-    protected String price;
+    protected double price;
     protected String departurecity;
     protected String landingcity;
 
-    public String getLandingcity() {
-        return landingcity;
-    }
-
-    public void setLandingcity(String landingcity) {
-        this.landingcity = landingcity;
-    }
-
-    public String getDeparturecity() {
-
-        return departurecity;
-    }
-
-    public void setDeparturecity(String departurecity) {
-        this.departurecity = departurecity;
-    }
-
-  /*  public FlightInfo(String parentname, String flightNo, String departuretime, String landingtime, String price, String departurecity, String landingcity) {
+    public FlightInfo(String parentname, String flightNo, Date departuretime, Date landingtime, double price, String departurecity, String landingcity) {
         this.parentname = parentname;
         this.flightNo = flightNo;
         this.departuretime = departuretime;
@@ -43,16 +24,21 @@ public class FlightInfo {
         this.departurecity = departurecity;
         this.landingcity = landingcity;
     }
-
-    public FlightInfo(String parentname, String flightNo, String departuretime, String landingtime, String price) {
-        this.parentname = parentname;
-        this.flightNo = flightNo;
-        this.departuretime = departuretime;
-        this.landingtime = landingtime;
-        this.price = price;
-    }*/
 
     public FlightInfo() {
+    }
+
+    @Override
+    public String toString() {
+        return "FlightInfo{" +
+                "parentname='" + parentname + '\'' +
+                ", flightNo='" + flightNo + '\'' +
+                ", departuretime=" + departuretime +
+                ", landingtime=" + landingtime +
+                ", price=" + price +
+                ", departurecity='" + departurecity + '\'' +
+                ", landingcity='" + landingcity + '\'' +
+                '}';
     }
 
     public String getParentname() {
@@ -69,40 +55,6 @@ public class FlightInfo {
 
     public void setFlightNo(String flightNo) {
         this.flightNo = flightNo;
-    }
-/*
-    public String getDeparturetime() {
-        return departuretime;
-    }
-
-    public void setDeparturetime(String departuretime) {
-        this.departuretime = departuretime;
-    }
-
-    public String getLandingtime() {
-        return landingtime;
-    }
-
-    public void setLandingtime(String landingtime) {
-        this.landingtime = landingtime;
-    }*/
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public FlightInfo(String parentname, String flightNo, Date departuretime, Date landingtime, String price, String departurecity, String landingcity) {
-        this.parentname = parentname;
-        this.flightNo = flightNo;
-        this.departuretime = departuretime;
-        this.landingtime = landingtime;
-        this.price = price;
-        this.departurecity = departurecity;
-        this.landingcity = landingcity;
     }
 
     public Date getDeparturetime() {
@@ -121,16 +73,27 @@ public class FlightInfo {
         this.landingtime = landingtime;
     }
 
-    @Override
-    public String toString() {
-        return "FlightInfo{" +
-                "parentname='" + parentname + '\'' +
-                ", flightNo='" + flightNo + '\'' +
-                ", departuretime=" + departuretime +
-                ", landingtime=" + landingtime +
-                ", price='" + price + '\'' +
-                ", departurecity='" + departurecity + '\'' +
-                ", landingcity='" + landingcity + '\'' +
-                '}';
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getDeparturecity() {
+        return departurecity;
+    }
+
+    public void setDeparturecity(String departurecity) {
+        this.departurecity = departurecity;
+    }
+
+    public String getLandingcity() {
+        return landingcity;
+    }
+
+    public void setLandingcity(String landingcity) {
+        this.landingcity = landingcity;
     }
 }
