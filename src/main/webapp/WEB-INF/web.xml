@@ -10,6 +10,6 @@
     </servlet>
   <servlet-mapping>
       <servlet-name>CtripCrawlFlightInfoServlet</servlet-name>
-      <url-pattern>/ctripcrawlservlet</url-pattern>
+      <url-pattern>ctripcrawlservlet</url-pattern>
   </servlet-mapping>
 </web-app>
