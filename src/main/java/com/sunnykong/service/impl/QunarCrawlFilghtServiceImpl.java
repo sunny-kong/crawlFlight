@@ -40,6 +40,16 @@ public class QunarCrawlFilghtServiceImpl implements CrawlFlightService {
         return flightInfoList;
     }
 
+    @Override
+    public void saveFlightInfo(List<FlightInfo> crawl) {
+
+    }
+
+    @Override
+    public List<FlightInfo> findAllFlightInfo() {
+        return null;
+    }
+
     private List<Header> buildHeaders() {
         List<Header> headerList = new ArrayList<Header>();
         headerList.add(new BasicHeader("Accept", "*/*"));

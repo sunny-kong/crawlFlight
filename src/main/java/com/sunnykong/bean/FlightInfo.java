@@ -7,6 +7,7 @@ import java.util.Date;
  * Created by xj on 15-12-8.
  */
 public class FlightInfo {
+    protected int id;
     protected String parentname;
     protected String flightNo;
     protected Date departuretime;
@@ -15,7 +16,8 @@ public class FlightInfo {
     protected String departurecity;
     protected String landingcity;
 
-    public FlightInfo(String parentname, String flightNo, Date departuretime, Date landingtime, double price, String departurecity, String landingcity) {
+    public FlightInfo(int id, String parentname, String flightNo, Date departuretime, Date landingtime, double price, String departurecity, String landingcity) {
+        this.id = id;
         this.parentname = parentname;
         this.flightNo = flightNo;
         this.departuretime = departuretime;
@@ -31,7 +33,8 @@ public class FlightInfo {
     @Override
     public String toString() {
         return "FlightInfo{" +
-                "parentname='" + parentname + '\'' +
+                "id=" + id +
+                ", parentname='" + parentname + '\'' +
                 ", flightNo='" + flightNo + '\'' +
                 ", departuretime=" + departuretime +
                 ", landingtime=" + landingtime +
@@ -39,6 +42,14 @@ public class FlightInfo {
                 ", departurecity='" + departurecity + '\'' +
                 ", landingcity='" + landingcity + '\'' +
                 '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getParentname() {

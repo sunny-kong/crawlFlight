@@ -13,4 +13,7 @@ import java.util.List;
  */
 public interface CrawlFlightService {
     public List<FlightInfo> crawl(AirPortCity from, AirPortCity to, Date date) throws IOException, ParseException;
+    public void saveFlightInfo(List<FlightInfo> crawl);
+
+    public List<FlightInfo> findAllFlightInfo();
 }

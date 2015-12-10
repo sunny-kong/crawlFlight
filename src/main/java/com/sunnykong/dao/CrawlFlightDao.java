@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface CrawlFlightDao {
     public void saveFlightInfo(List<FlightInfo> flightInfoList);
+
+    public List<FlightInfo> findAllFlightInfo();
 }
