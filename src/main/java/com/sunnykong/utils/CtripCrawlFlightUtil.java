@@ -4,6 +4,7 @@ import com.sunnykong.bean.AirPortCity;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +14,7 @@ import java.util.List;
  * Created by KXJ on 2015-12-10.
  */
 public class CtripCrawlFlightUtil {
-    public static String getURL(AirPortCity from, AirPortCity to, Date date) {
+    public static String getURL(AirPortCity from, AirPortCity to, Timestamp date) {
         String time = new SimpleDateFormat("yyyy-MM-dd").format(date);
         return "http://flights.ctrip.com/domesticsearch/search/SearchFirstRouteFlights?DCity1=" + from + "&ACity1=" + to + "&SearchType=S&DDate1=" + time + "&rk=9.41909585148096213724&CK=47D506EA463C9C7FCC1D96E8C2AEE345&r=0.3195956253403258627319";
     //          http://flights.ctrip.com/domesticsearch/search/SearchFirstRouteFlights?DCity1=URC&ACity1=HET&SearchType=S&DDate1=2016-02-14&rk=6.78621104452759104529&CK=D390E4472A59B315B902E0C5D1B10BCB&r=0.42116627685717020786316

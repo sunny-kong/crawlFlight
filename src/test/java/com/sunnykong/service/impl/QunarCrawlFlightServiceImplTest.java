@@ -6,6 +6,7 @@ import com.sunnykong.service.CrawlFlightService;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -17,7 +18,7 @@ public class QunarCrawlFlightServiceImplTest {
     @Test
     public void testCrawl() throws ParseException, IOException {
         CrawlFlightService crawlFlightService = new QunarCrawlFilghtServiceImpl();
-        List<FlightInfo> flightInfo = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, new SimpleDateFormat("yyyy-MM-dd").parse("2015-02-05"));
+        List<FlightInfo> flightInfo = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse("2015-02-05").getTime()));
         System.out.println(flightInfo);
     }
 }

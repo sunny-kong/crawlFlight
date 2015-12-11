@@ -1,6 +1,3 @@
-<%@ page import="org.apache.http.client.HttpClient" %>
-<%@ page import="org.apache.http.impl.client.DefaultHttpClient" %>
-<%@ page import="org.apache.http.client.methods.HttpGet" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.sunnykong.bean.FlightInfo" %>
 <%--
@@ -11,12 +8,21 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    List<FlightInfo> flightInfoList = (List<FlightInfo>) request.getSession().getAttribute("flightInfoList");
-    for (FlightInfo flightInfo : flightInfoList) {
-%>
-<%=flightInfo.getFlightNo()%>
-<%=flightInfo.getPrice()%>
-<%
-    }
-%>
+
+<table>
+    <%
+        List<FlightInfo> flightInfoList = (List<FlightInfo>) request.getSession().getAttribute("flightInfoList");
+        for (FlightInfo flightInfo : flightInfoList) {
+    %>
+    <tr>
+        <td><%=flightInfo.getFlightNo()%></td>
+        <td><%=flightInfo.getPrice()%></td>
+        <td><%=flightInfo.getDeparturetime()%></td>
+        <td><%=flightInfo.getLandingtime()%></td>
+    </tr>
+    <%
+        }
+    %>
+</table>
+
+

@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,9 +21,9 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
 
     @Override
     public void saveFlightInfo(List<FlightInfo> flightInfoList) {
-        String sql = "INSERT INTO flightinfo(flightno,parentname,departuretime,landingtime,price,departurecity,landingcity)VALUES (?,?,?,?,?,?,?)  on DUPLICATE KEY UPDATE price=?";
+        String sql = "INSERT INTO flightinfo(flightno,parentname,departuretime,landingtime,price,departurecity,landingcity,optiontime)VALUES (?,?,?,?,?,?,?,?)  on DUPLICATE KEY UPDATE price=?";
         for (FlightInfo flightInfo : flightInfoList) {
-            jdbcTemplate.update(sql, new Object[]{flightInfo.getFlightNo(), flightInfo.getParentname(), flightInfo.getDeparturetime(), flightInfo.getLandingtime(), flightInfo.getPrice(), flightInfo.getDeparturecity(), flightInfo.getLandingcity(),flightInfo.getPrice()});
+            jdbcTemplate.update(sql, new Object[]{flightInfo.getFlightNo(), flightInfo.getParentname(), flightInfo.getDeparturetime(), flightInfo.getLandingtime(), flightInfo.getPrice(), flightInfo.getDeparturecity(), flightInfo.getLandingcity(),flightInfo.getOptiontime(),flightInfo.getPrice()});
             System.out.println("数据库跟新成功");
         }
     }
@@ -35,11 +37,12 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
                 flightInfo.setId(resultSet.getInt("id"));
                 flightInfo.setFlightNo(resultSet.getString("flightno"));
                 flightInfo.setParentname(resultSet.getString("parentname"));
-                flightInfo.setDeparturetime(resultSet.getDate("departuretime"));
-                flightInfo.setLandingtime(resultSet.getDate("landingtime"));
+                flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
+                flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
                 flightInfo.setPrice(resultSet.getDouble("price"));
                 flightInfo.setDeparturecity(resultSet.getString("departurecity"));
                 flightInfo.setLandingcity(resultSet.getString("landingcity"));
+                flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
                 return flightInfo;
             }
         });

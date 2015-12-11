@@ -15,6 +15,7 @@ import org.apache.http.impl.client.*;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,7 +26,7 @@ import java.util.*;
 public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
     CrawlFlightDao crawlFlightDao=new CtripCrawlFlightDaoImpl();
     @Override
-    public List<FlightInfo> crawl(AirPortCity from, AirPortCity to, Date date) throws IOException, ParseException {
+    public List<FlightInfo> crawl(AirPortCity from, AirPortCity to, Timestamp date) throws IOException, ParseException {
         List<Header> headers = CtripCrawlFlightUtil.buildHeaders();
         CloseableHttpClient httpClient = HttpClients.custom().setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36").setDefaultHeaders(headers).build();
         String url= CtripCrawlFlightUtil.getURL(from, to, date);
@@ -46,9 +47,10 @@ public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
                 flightInfo.setDeparturecity(String.valueOf(((Map) fisList.get(i)).get("dpc")));
                 flightInfo.setLandingcity(String.valueOf(((Map) fisList.get(i)).get("apc")));
                 flightInfo.setFlightNo(String.valueOf(((Map) fisList.get(i)).get("fn")));
-                flightInfo.setDeparturetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(String.valueOf(((Map) fisList.get(i)).get("dt"))));
-                flightInfo.setLandingtime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(String.valueOf(((Map) fisList.get(i)).get("at"))));
+                flightInfo.setDeparturetime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(String.valueOf(((Map) fisList.get(i)).get("dt")))));
+                flightInfo.setLandingtime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(String.valueOf(((Map) fisList.get(i)).get("at")))));
                 flightInfo.setPrice(Double.parseDouble(String.valueOf(((Map) fisList.get(i)).get("lp"))));
+                flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())));
                 flightInfoList.add(flightInfo);
             }
             EntityUtils.consume(entity);

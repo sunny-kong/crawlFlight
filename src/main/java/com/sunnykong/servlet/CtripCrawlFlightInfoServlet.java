@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,10 +32,14 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet{
             @Override
             public void run() {
                 try {
-                    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String datestr=sdf.format(new Date());
-                    Date date = sdf.parse(datestr);
-                    crawlFlightService.saveFlightInfo(crawlFlightService.crawl(AirPortCity.HET,AirPortCity.URC,date));
+                    Date date1 = sdf.parse(datestr);
+//                    Date date1 = sdf.parse("2016-02-04");
+                    Timestamp date=new Timestamp(new Date().getTime());
+                    List<FlightInfo> flightInfoList=crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC,date);
+                    System.out.println(flightInfoList);
+                    crawlFlightService.saveFlightInfo(flightInfoList);
                     System.out.println("初始化servlet，将当前时间的机票信息保存到数据库----------------"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -43,7 +48,7 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet{
                 }
 
             }
-        },new Date(),20*1000L);
+        },new Date(),30*1000L);
     }
     public void service(HttpServletRequest request,HttpServletResponse response) {
         try {
