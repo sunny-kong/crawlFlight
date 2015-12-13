@@ -33,10 +33,8 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet{
             public void run() {
                 try {
                     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String datestr=sdf.format(new Date());
-                    Date date1 = sdf.parse(datestr);
-//                    Date date1 = sdf.parse("2016-02-04");
-                    Timestamp date=new Timestamp(new Date().getTime());
+                    String date=sdf.format(new Date());
+
                     List<FlightInfo> flightInfoList=crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC,date);
                     System.out.println(flightInfoList);
                     crawlFlightService.saveFlightInfo(flightInfoList);

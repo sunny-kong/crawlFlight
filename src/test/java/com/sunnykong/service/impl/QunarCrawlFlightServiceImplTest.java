@@ -18,7 +18,7 @@ public class QunarCrawlFlightServiceImplTest {
     @Test
     public void testCrawl() throws ParseException, IOException {
         CrawlFlightService crawlFlightService = new QunarCrawlFilghtServiceImpl();
-        List<FlightInfo> flightInfo = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse("2015-02-05").getTime()));
+        List<FlightInfo> flightInfo = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, "2015-02-05");
         System.out.println(flightInfo);
     }
 }

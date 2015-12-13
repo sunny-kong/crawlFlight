@@ -18,10 +18,7 @@ import java.util.List;
 public class ToBeJsonUtil {
     public static void main(String[] args) throws ParseException, IOException {
         CrawlFlightService crawlFlightService= new CtripCrawlFlightServiceImpl();
-
-        Timestamp time=new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse("2016-02-06").getTime());
-
-        List<FlightInfo> flightInfoList=crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, time);
+        List<FlightInfo> flightInfoList=crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, "2016-02-06");
         for(FlightInfo flightIn:flightInfoList){
             System.out.println(flightIn);
         }
