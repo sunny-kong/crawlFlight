@@ -59,13 +59,25 @@ public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
     }
 
     @Override
-    public void saveFlightInfo(List<FlightInfo> flightInfoList) {
-        crawlFlightDao.saveFlightInfo(flightInfoList);
+    public void saveFlightInfo(FlightInfo flightInfo) {
+        crawlFlightDao.saveFlightInfo(flightInfo);
+//        crawlFlightDao.saveFlightInfo(flightInfoList);
     }
 
     @Override
     public List<FlightInfo> findAllFlightInfo() {
         return crawlFlightDao.findAllFlightInfo();
+    }
+
+    @Override
+    public FlightInfo findFlightInfoByUniqueKey(String flightno, Timestamp departuretime, Timestamp landingtime, double price) {
+        return crawlFlightDao.findFlightInfoByUniqueKey(flightno,departuretime,landingtime,price);
+    }
+
+
+    @Override
+    public double findLowPrice(String flightno, Timestamp timeRange) {
+        return crawlFlightDao.findLowPrice(flightno, timeRange);
     }
 
 

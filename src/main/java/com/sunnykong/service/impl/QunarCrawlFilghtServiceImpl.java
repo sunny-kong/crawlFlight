@@ -42,13 +42,25 @@ public class QunarCrawlFilghtServiceImpl implements CrawlFlightService {
     }
 
     @Override
-    public void saveFlightInfo(List<FlightInfo> crawl) {
+    public void saveFlightInfo(FlightInfo crawl) {
 
     }
+
+
 
     @Override
     public List<FlightInfo> findAllFlightInfo() {
         return null;
+    }
+
+    @Override
+    public FlightInfo findFlightInfoByUniqueKey(String flightno, Timestamp departuretime, Timestamp landingtime, double price) {
+        return null;
+    }
+
+    @Override
+    public double findLowPrice(String flightno, Timestamp timeRange) {
+        return 0;
     }
 
     private List<Header> buildHeaders() {
