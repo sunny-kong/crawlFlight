@@ -80,6 +80,8 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
                     flightInfoList1.add(flightInfo);
                     flightInfoMapByTime.put(timekey,flightInfoList1);
                 }
+
+                Collections.sort(timeRangeStr);
             }
 
             Map<String,List<FlightInfo>> stringListMap=new HashMap<String, List<FlightInfo>>();
