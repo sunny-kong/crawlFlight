@@ -63,16 +63,16 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
             response.setCharacterEncoding("utf-8");
 
             List<FlightInfo> flightInfoList = crawlFlightService.findAllFlightInfo();
-            List<String> timeRangeStr =null;
+            List<String> timeRangeStr = new ArrayList<String>();
             List<List<String>> flightNos= new ArrayList<List<String>>();
             List<List<Double>> prices= new ArrayList<List<Double>>();
 
             Map<String,List<FlightInfo>> flightInfoMapByTime=new HashMap<String, List<FlightInfo>>();
-            Set<String> timeset=new HashSet<String>();
             for(FlightInfo flightInfo:flightInfoList){
                 String timekey = new SimpleDateFormat("yyyy-MM-dd").format(flightInfo.getDeparturetime());
-                timeset.add(timekey);
-
+                if(!timeRangeStr.contains(timekey)){
+                    timeRangeStr.add(timekey);
+                }
                 if(flightInfoMapByTime.containsKey(timekey)){
                     flightInfoMapByTime.get(timekey).add(flightInfo);
                 }else{
@@ -81,8 +81,6 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
                     flightInfoMapByTime.put(timekey,flightInfoList1);
                 }
             }
-            timeRangeStr= new ArrayList<String>(timeset);
-
 
             Map<String,List<FlightInfo>> stringListMap=new HashMap<String, List<FlightInfo>>();
             Map<String,Map<String,List<FlightInfo>>> Mapdatas=new HashMap<String, Map<String, List<FlightInfo>>>();
