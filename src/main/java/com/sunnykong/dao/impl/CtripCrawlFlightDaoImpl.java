@@ -96,4 +96,24 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
             return null;
         }*/
     }
+
+    @Override
+    public List<FlightInfo> findFlightInfoByDay(Timestamp day) {
+        return jdbcTemplate.query("SELECT * FROM flightinfo where optiontime", new RowMapper<FlightInfo>() {
+            @Override
+            public FlightInfo mapRow(ResultSet resultSet, int i) throws SQLException {
+                FlightInfo flightInfo=new FlightInfo();
+                flightInfo.setId(resultSet.getInt("id"));
+                flightInfo.setFlightNo(resultSet.getString("flightno"));
+                flightInfo.setParentname(resultSet.getString("parentname"));
+                flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
+                flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
+                flightInfo.setPrice(resultSet.getDouble("price"));
+                flightInfo.setDeparturecity(resultSet.getString("departurecity"));
+                flightInfo.setLandingcity(resultSet.getString("landingcity"));
+                flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
+                return flightInfo;
+            }
+        });
+    }
 }

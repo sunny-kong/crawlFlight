@@ -54,7 +54,17 @@ public class QunarCrawlFilghtServiceImpl implements CrawlFlightService {
     }
 
     @Override
+    public List<FlightInfo> findFlightInfoByDay(Timestamp day) {
+        return null;
+    }
+
+    @Override
     public FlightInfo findFlightInfoByUniqueKey(String flightno, Timestamp departuretime, Timestamp landingtime, double price) {
+        return null;
+    }
+
+    @Override
+    public FlightInfo findFlightInfoByUniqueKeyByDay(String flightno, Timestamp departuretime, Timestamp landingtime, double price) {
         return null;
     }
 
