@@ -64,8 +64,8 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
 
             List<FlightInfo> flightInfoList = crawlFlightService.findAllFlightInfo();
             List<String> timeRangeStr = new ArrayList<String>();
-            List<String> flightNos=new ArrayList<String>();
-            List<Double> prices=new ArrayList<Double>();
+            List<List<String>> flightNos= new ArrayList<List<String>>();
+            List<List<Double>> prices= new ArrayList<List<Double>>();
 
             Map<String,List<FlightInfo>> flightInfoMapByTime=new HashMap<String, List<FlightInfo>>();
             for(FlightInfo flightInfo:flightInfoList){
@@ -86,12 +86,13 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
             for(String timeRange:flightInfoMapByTime.keySet()){
              List<FlightInfo> flightInfoList1=flightInfoMapByTime.get(timeRange);
 
-
+                List<String> flightList=new ArrayList<String>();
+                List<Double> prices1=new ArrayList<Double>();
                 for(FlightInfo flightInfo:flightInfoList1){
                     String flightno = flightInfo.getFlightNo();
-                    flightNos.add(flightno);
+                    flightList.add(flightno);
                     double price=crawlFlightService.findLowPrice(flightno,flightInfo.getDeparturetime());
-                    prices.add(price);
+                    prices1.add(price);
                     if(stringListMap.containsKey(flightno)){
                         stringListMap.get(flightno).add(flightInfo);
                     }else{
@@ -100,7 +101,8 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
                         stringListMap.put(flightno,flightInfoList2);
                     }
                 }
-
+                flightNos.add(flightList);
+                prices.add(prices1);
                 Mapdatas.put(timeRange,stringListMap);
             }
 
