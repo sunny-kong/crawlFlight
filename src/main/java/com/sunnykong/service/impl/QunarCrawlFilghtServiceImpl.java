@@ -13,6 +13,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 public class QunarCrawlFilghtServiceImpl implements CrawlFlightService {
 
     @Override
-    public List<FlightInfo> crawl(AirPortCity from, AirPortCity to, Date date) throws IOException {
+    public List<FlightInfo> crawl(AirPortCity from, AirPortCity to, String date) throws IOException {
         List<Header> headers = buildHeaders();
         CloseableHttpClient httpClient = HttpClients.custom().setDefaultHeaders(headers).build();
         HttpGet httpget = new HttpGet("http://flight.qunar.com/twell/longwell?&http%3A%2F%2Fwww.travelco.com%2FsearchArrivalAirport=%E4%B9%8C%E9%B2%81%E6%9C%A8%E9%BD%90&http%3A%2F%2Fwww.travelco.com%2FsearchDepartureAirport=%E5%91%BC%E5%92%8C%E6%B5%A9%E7%89%B9&http%3A%2F%2Fwww.travelco.com%2FsearchDepartureTime=2016-02-05&http%3A%2F%2Fwww.travelco.com%2FsearchReturnTime=2016-02-05&locale=zh&nextNDays=0&searchLangs=zh&searchType=OneWayFlight&tags=1&mergeFlag=0&xd=f1449634593000&wyf=0P8HfQdSbQP%2Fll2%2FERP8flP00YAFfQt%2FbdP%2FuUd8lyeFlUd%2F%7C1441321882698&from=tejia_iow_qiri&_token=6308");
@@ -41,13 +42,25 @@ public class QunarCrawlFilghtServiceImpl implements CrawlFlightService {
     }
 
     @Override
-    public void saveFlightInfo(List<FlightInfo> crawl) {
+    public void saveFlightInfo(FlightInfo crawl) {
 
     }
+
+
 
     @Override
     public List<FlightInfo> findAllFlightInfo() {
         return null;
+    }
+
+    @Override
+    public FlightInfo findFlightInfoByUniqueKey(String flightno, Timestamp departuretime, Timestamp landingtime, double price) {
+        return null;
+    }
+
+    @Override
+    public double findLowPrice(String flightno, Timestamp timeRange) {
+        return 0;
     }
 
     private List<Header> buildHeaders() {
