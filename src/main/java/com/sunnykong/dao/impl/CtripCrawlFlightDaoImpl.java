@@ -74,27 +74,6 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
     public double findLowPrice(String flightno, Timestamp departuretime) {
         String sql="select min(price) from flightinfo where flightno=? and departuretime=? GROUP BY departuretime";
         return jdbcTemplate.queryForInt(sql,new Object[]{flightno,departuretime});
-     /*   try {
-
-            return (FlightInfo) jdbcTemplate.queryForObject(sql, new Object[]{flightno, departuretime}, new RowMapper<Object>() {
-                @Override
-                public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-                    FlightInfo flightInfo = new FlightInfo();
-                    flightInfo.setId(resultSet.getInt("id"));
-                    flightInfo.setFlightNo(resultSet.getString("flightno"));
-                    flightInfo.setParentname(resultSet.getString("parentname"));
-                    flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
-                    flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
-                    flightInfo.setPrice(resultSet.getDouble("price"));
-                    flightInfo.setDeparturecity(resultSet.getString("departurecity"));
-                    flightInfo.setLandingcity(resultSet.getString("landingcity"));
-                    flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
-                    return flightInfo;
-                }
-            });
-        }catch(EmptyResultDataAccessException e){
-            return null;
-        }*/
     }
 
     @Override
