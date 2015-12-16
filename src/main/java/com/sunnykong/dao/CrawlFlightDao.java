@@ -16,4 +16,8 @@ public interface CrawlFlightDao {
     public double findLowPrice(String flightno, Timestamp timeRange);
 
     List<FlightInfo> findFlightInfoByDay(Timestamp day);
+
+    List<FlightInfo> findLowPriceFlightInfoByDay();
+
+
 }

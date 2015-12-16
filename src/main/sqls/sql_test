@@ -1,0 +1,5 @@
+     //查询所有起飞时间在2016-02-05  select * from flightinfo where departuretime between '2016-02-05 0:00:00' and '2016-02-05 23:59:59'
+        //查询每天的最低价 select min(price) from flightinfo group by to_char(optiontime,'dd')
+    //select min(price) ,optiontime from flightinfo group by   DATE_FORMAT(optiontime, "%d")
+        //select min(price),flightno from  flightinfo where optiontime between '2015-12-16 0:00:00' and '2015-12-16 23:59:59'
+    //select min(price) ,DATE_FORMAT(optiontime, "%Y-%m-%d") from flightinfo group by   DATE_FORMAT(optiontime, "%Y-%m-%d")

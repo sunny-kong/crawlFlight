@@ -20,4 +20,6 @@ public interface CrawlFlightService {
     public FlightInfo findFlightInfoByUniqueKey(String flightno,Timestamp departuretime,Timestamp landingtime,double price);
     public FlightInfo findFlightInfoByUniqueKeyByDay(String flightno,Timestamp departuretime,Timestamp landingtime,double price);
     public double findLowPrice(String flightno, Timestamp timeRange);
+
+    List<FlightInfo> findLowPriceFlightInfoByDay();
 }

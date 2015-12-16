@@ -90,5 +90,10 @@ public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
         return crawlFlightDao.findLowPrice(flightno, timeRange);
     }
 
+    @Override
+    public List<FlightInfo> findLowPriceFlightInfoByDay() {
+        return crawlFlightDao.findLowPriceFlightInfoByDay();
+    }
+
 
 }

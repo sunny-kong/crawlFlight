@@ -21,14 +21,14 @@ public class CtripCrawlFlightInfoServlet2 extends HttpServlet {
     CrawlFlightService crawlFlightService = new CtripCrawlFlightServiceImpl();
     String[] dataArry = new String[]{"2016-02-01", "2016-02-02", "2016-02-03", "2016-02-04", "2016-02-05", "2016-02-06", "2016-02-07"};
     Timer timer = new Timer();
-
+/*
     public void init() {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 try {
-                   /* SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String date=sdf.format(new Date());*/
+                   *//* SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String date=sdf.format(new Date());*//*
 
                     for (String date : dataArry) {
                         List<FlightInfo> flightInfoList = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, date);
@@ -51,7 +51,7 @@ public class CtripCrawlFlightInfoServlet2 extends HttpServlet {
 
             }
         }, new Date(), 1800 * 1000L);
-    }
+    }*/
 
     public void service(HttpServletRequest request, HttpServletResponse response) {
         try {

@@ -73,6 +73,11 @@ public class QunarCrawlFilghtServiceImpl implements CrawlFlightService {
         return 0;
     }
 
+    @Override
+    public List<FlightInfo> findLowPriceFlightInfoByDay() {
+        return null;
+    }
+
     private List<Header> buildHeaders() {
         List<Header> headerList = new ArrayList<Header>();
         headerList.add(new BasicHeader("Accept", "*/*"));

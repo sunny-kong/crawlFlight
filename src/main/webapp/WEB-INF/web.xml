@@ -12,4 +12,13 @@
       <servlet-name>CtripCrawlFlightInfoServlet</servlet-name>
       <url-pattern>/ctripcrawlservlet</url-pattern>
   </servlet-mapping>
+    <servlet>
+        <servlet-name>Ctripcrawlonedayservlet</servlet-name>
+        <servlet-class>com.sunnykong.servlet.CtripCrawlFlightInfoOneDayServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Ctripcrawlonedayservlet</servlet-name>
+        <url-pattern>/ctripcrawlonedayservlet</url-pattern>
+    </servlet-mapping>
 </web-app>
