@@ -74,26 +74,46 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
     public double findLowPrice(String flightno, Timestamp departuretime) {
         String sql="select min(price) from flightinfo where flightno=? and departuretime=? GROUP BY departuretime";
         return jdbcTemplate.queryForInt(sql,new Object[]{flightno,departuretime});
-     /*   try {
+    }
 
-            return (FlightInfo) jdbcTemplate.queryForObject(sql, new Object[]{flightno, departuretime}, new RowMapper<Object>() {
-                @Override
-                public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-                    FlightInfo flightInfo = new FlightInfo();
-                    flightInfo.setId(resultSet.getInt("id"));
-                    flightInfo.setFlightNo(resultSet.getString("flightno"));
-                    flightInfo.setParentname(resultSet.getString("parentname"));
-                    flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
-                    flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
-                    flightInfo.setPrice(resultSet.getDouble("price"));
-                    flightInfo.setDeparturecity(resultSet.getString("departurecity"));
-                    flightInfo.setLandingcity(resultSet.getString("landingcity"));
-                    flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
-                    return flightInfo;
-                }
-            });
-        }catch(EmptyResultDataAccessException e){
-            return null;
-        }*/
+    @Override
+    public List<FlightInfo> findFlightInfoByDay(Timestamp day) {
+        return jdbcTemplate.query("SELECT * FROM flightinfo where optiontime", new RowMapper<FlightInfo>() {
+            @Override
+            public FlightInfo mapRow(ResultSet resultSet, int i) throws SQLException {
+                FlightInfo flightInfo=new FlightInfo();
+                flightInfo.setId(resultSet.getInt("id"));
+                flightInfo.setFlightNo(resultSet.getString("flightno"));
+                flightInfo.setParentname(resultSet.getString("parentname"));
+                flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
+                flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
+                flightInfo.setPrice(resultSet.getDouble("price"));
+                flightInfo.setDeparturecity(resultSet.getString("departurecity"));
+                flightInfo.setLandingcity(resultSet.getString("landingcity"));
+                flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
+                return flightInfo;
+            }
+        });
+    }
+
+    @Override
+    public List<FlightInfo> findLowPriceFlightInfoByDay() {
+        String sql="SELECT f2.id,f2.flightno,f2.parentname,f2.departuretime,f2.landingtime,f2.departurecity,f2.landingcity,f2.price,f1.optiontime FROM flightinfo f2,(select min(price) price ,DATE_FORMAT(optiontime, \"%Y-%m-%d\") optiontime from flightinfo group by   DATE_FORMAT(optiontime, \"%Y-%m-%d\"))f1 WHERE f2.price=f1.price and DATE_FORMAT(f2.optiontime, \"%Y-%m-%d\")=f1.optiontime";
+        return jdbcTemplate.query(sql, new RowMapper<FlightInfo>() {
+            @Override
+            public FlightInfo mapRow(ResultSet resultSet, int i) throws SQLException {
+                FlightInfo flightInfo=new FlightInfo();
+                flightInfo.setId(resultSet.getInt("id"));
+                flightInfo.setFlightNo(resultSet.getString("flightno"));
+                flightInfo.setParentname(resultSet.getString("parentname"));
+                flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
+                flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
+                flightInfo.setPrice(resultSet.getDouble("price"));
+                flightInfo.setDeparturecity(resultSet.getString("departurecity"));
+                flightInfo.setLandingcity(resultSet.getString("landingcity"));
+                flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
+                return flightInfo;
+            }
+        });
     }
 }

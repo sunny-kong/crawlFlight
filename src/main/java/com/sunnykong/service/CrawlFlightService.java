@@ -16,6 +16,10 @@ public interface CrawlFlightService {
     public List<FlightInfo> crawl(AirPortCity from, AirPortCity to, String date) throws IOException, ParseException;
     public void saveFlightInfo(FlightInfo crawl);
     public List<FlightInfo> findAllFlightInfo();
+    public List<FlightInfo> findFlightInfoByDay(Timestamp day);
     public FlightInfo findFlightInfoByUniqueKey(String flightno,Timestamp departuretime,Timestamp landingtime,double price);
+    public FlightInfo findFlightInfoByUniqueKeyByDay(String flightno,Timestamp departuretime,Timestamp landingtime,double price);
     public double findLowPrice(String flightno, Timestamp timeRange);
+
+    List<FlightInfo> findLowPriceFlightInfoByDay();
 }

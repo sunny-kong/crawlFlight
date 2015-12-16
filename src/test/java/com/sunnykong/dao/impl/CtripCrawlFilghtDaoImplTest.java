@@ -70,6 +70,13 @@ public class CtripCrawlFilghtDaoImplTest {
         double price = dao.findLowPrice("CA1265", Timestamp.valueOf("2016-02-07 11:30:00"));
         System.out.println("同一航班最低票价为：" + price);
     }
+    @Test
+    public void testLowPriceByDay(){
+        List<FlightInfo> flightInfoList=dao.findLowPriceFlightInfoByDay();
+        for(FlightInfo flightInfo:flightInfoList){
+            System.out.println(flightInfo);
+        }
+    }
 
 
 }

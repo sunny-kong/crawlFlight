@@ -4,16 +4,12 @@ import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.service.CrawlFlightService;
 import com.sunnykong.service.impl.CtripCrawlFlightServiceImpl;
-import com.sunnykong.utils.MapToBeanUtil;
 import com.sunnykong.utils.ToBeJsonUtil;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -21,7 +17,7 @@ import java.util.*;
 /**
  * Created by KXJ on 2015-12-10.
  */
-public class CtripCrawlFlightInfoServlet extends HttpServlet {
+public class CtripCrawlFlightInfoServlet2 extends HttpServlet {
     CrawlFlightService crawlFlightService = new CtripCrawlFlightServiceImpl();
     String[] dataArry = new String[]{"2016-02-01", "2016-02-02", "2016-02-03", "2016-02-04", "2016-02-05", "2016-02-06", "2016-02-07"};
     Timer timer = new Timer();
@@ -64,7 +60,7 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
 
             List<FlightInfo> flightInfoList = crawlFlightService.findAllFlightInfo();
             List<String> timeRangeStr = new ArrayList<String>();
-            List<String> flightNos= new ArrayList<String>();
+            List<List<String>> flightNos= new ArrayList<List<String>>();
             List<List<Double>> prices= new ArrayList<List<Double>>();
 
             Map<String,List<FlightInfo>> flightInfoMapByTime=new HashMap<String, List<FlightInfo>>();
@@ -90,11 +86,11 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
             for(String timeRange:flightInfoMapByTime.keySet()){
              List<FlightInfo> flightInfoList1=flightInfoMapByTime.get(timeRange);
 
+                List<String> flightList=new ArrayList<String>();
                 List<Double> prices1=new ArrayList<Double>();
                 for(FlightInfo flightInfo:flightInfoList1){
                     String flightno = flightInfo.getFlightNo();
-                    if(!flightNos.contains(flightno))
-                    flightNos.add(flightno);
+                    flightList.add(flightno);
                     double price=crawlFlightService.findLowPrice(flightno,flightInfo.getDeparturetime());
                     prices1.add(price);
                     if(stringListMap.containsKey(flightno)){
@@ -105,6 +101,7 @@ public class CtripCrawlFlightInfoServlet extends HttpServlet {
                         stringListMap.put(flightno,flightInfoList2);
                     }
                 }
+                flightNos.add(flightList);
                 prices.add(prices1);
                 Mapdatas.put(timeRange,stringListMap);
             }
