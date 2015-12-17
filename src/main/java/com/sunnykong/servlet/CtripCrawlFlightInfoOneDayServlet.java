@@ -44,7 +44,7 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
 
                 }
             }
-        }, currentTime, 1800 * 1000L);
+        }, currentTime, 3600 * 1000L);
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) {
