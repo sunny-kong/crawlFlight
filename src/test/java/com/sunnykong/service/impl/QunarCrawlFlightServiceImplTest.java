@@ -17,8 +17,8 @@ import java.util.List;
 public class QunarCrawlFlightServiceImplTest {
     @Test
     public void testCrawl() throws ParseException, IOException {
-        CrawlFlightService crawlFlightService = new QunarCrawlFilghtServiceImpl();
+       /* CrawlFlightService crawlFlightService = new QunarCrawlFilghtServiceImpl();
         List<FlightInfo> flightInfo = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, "2015-02-05");
-        System.out.println(flightInfo);
+        System.out.println(flightInfo);*/
     }
 }

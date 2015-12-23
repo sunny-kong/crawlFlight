@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -22,15 +23,16 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
 
     public void saveFlightInfo(FlightInfo flightInfo) {
         String sql = "INSERT INTO flightinfo(flightno,parentname,departuretime,landingtime,price,departurecity,landingcity,optiontime)VALUES (?,?,?,?,?,?,?,?)";
-            jdbcTemplate.update(sql, new Object[]{flightInfo.getFlightNo(), flightInfo.getParentname(), flightInfo.getDeparturetime(), flightInfo.getLandingtime(), flightInfo.getPrice(), flightInfo.getDeparturecity(), flightInfo.getLandingcity(),flightInfo.getOptiontime()});
-            System.out.println("数据库跟新成功");
+        jdbcTemplate.update(sql, new Object[]{flightInfo.getFlightNo(), flightInfo.getParentname(), flightInfo.getDeparturetime(), flightInfo.getLandingtime(), flightInfo.getPrice(), flightInfo.getDeparturecity(), flightInfo.getLandingcity(), flightInfo.getOptiontime()});
+        System.out.println("数据库跟新成功" + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
     }
+
     @Override
     public List<FlightInfo> findAllFlightInfo() {
         return jdbcTemplate.query("SELECT * FROM flightinfo", new RowMapper<FlightInfo>() {
             @Override
             public FlightInfo mapRow(ResultSet resultSet, int i) throws SQLException {
-                FlightInfo flightInfo=new FlightInfo();
+                FlightInfo flightInfo = new FlightInfo();
                 flightInfo.setId(resultSet.getInt("id"));
                 flightInfo.setFlightNo(resultSet.getString("flightno"));
                 flightInfo.setParentname(resultSet.getString("parentname"));
@@ -47,33 +49,33 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
 
     @Override
     public FlightInfo findFlightInfoByUniqueKey(String flightno, Timestamp departuretime, Timestamp landingtime, double price) {
-            String sql="SELECT * FROM flightinfo WHERE flightno=? AND departuretime=? AND landingtime=? AND price=?";
-       try {
-           return (FlightInfo) jdbcTemplate.queryForObject(sql, new Object[]{flightno, departuretime, landingtime, price}, new RowMapper<Object>() {
-               @Override
-               public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-                   FlightInfo flightInfo = new FlightInfo();
-                   flightInfo.setId(resultSet.getInt("id"));
-                   flightInfo.setFlightNo(resultSet.getString("flightno"));
-                   flightInfo.setParentname(resultSet.getString("parentname"));
-                   flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
-                   flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
-                   flightInfo.setPrice(resultSet.getDouble("price"));
-                   flightInfo.setDeparturecity(resultSet.getString("departurecity"));
-                   flightInfo.setLandingcity(resultSet.getString("landingcity"));
-                   flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
-                   return flightInfo;
-               }
-           });
-       }catch(EmptyResultDataAccessException e){
-           return null;
-       }
+        String sql = "SELECT * FROM flightinfo WHERE flightno=? AND departuretime=? AND landingtime=? AND price=?";
+        try {
+            return (FlightInfo) jdbcTemplate.queryForObject(sql, new Object[]{flightno, departuretime, landingtime, price}, new RowMapper<Object>() {
+                @Override
+                public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+                    FlightInfo flightInfo = new FlightInfo();
+                    flightInfo.setId(resultSet.getInt("id"));
+                    flightInfo.setFlightNo(resultSet.getString("flightno"));
+                    flightInfo.setParentname(resultSet.getString("parentname"));
+                    flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
+                    flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
+                    flightInfo.setPrice(resultSet.getDouble("price"));
+                    flightInfo.setDeparturecity(resultSet.getString("departurecity"));
+                    flightInfo.setLandingcity(resultSet.getString("landingcity"));
+                    flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
+                    return flightInfo;
+                }
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
     public double findLowPrice(String flightno, Timestamp departuretime) {
-        String sql="select min(price) from flightinfo where flightno=? and departuretime=? GROUP BY departuretime";
-        return jdbcTemplate.queryForInt(sql,new Object[]{flightno,departuretime});
+        String sql = "select min(price) from flightinfo where flightno=? and departuretime=? GROUP BY departuretime";
+        return jdbcTemplate.queryForInt(sql, new Object[]{flightno, departuretime});
     }
 
     @Override
@@ -81,7 +83,7 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
         return jdbcTemplate.query("SELECT * FROM flightinfo where optiontime", new RowMapper<FlightInfo>() {
             @Override
             public FlightInfo mapRow(ResultSet resultSet, int i) throws SQLException {
-                FlightInfo flightInfo=new FlightInfo();
+                FlightInfo flightInfo = new FlightInfo();
                 flightInfo.setId(resultSet.getInt("id"));
                 flightInfo.setFlightNo(resultSet.getString("flightno"));
                 flightInfo.setParentname(resultSet.getString("parentname"));
@@ -98,11 +100,60 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
 
     @Override
     public List<FlightInfo> findLowPriceFlightInfoByDay() {
-        String sql="SELECT f2.id,f2.flightno,f2.parentname,f2.departuretime,f2.landingtime,f2.departurecity,f2.landingcity,f2.price,f1.optiontime FROM flightinfo f2,(select min(price) price ,DATE_FORMAT(optiontime, \"%Y-%m-%d\") optiontime from flightinfo group by   DATE_FORMAT(optiontime, \"%Y-%m-%d\"))f1 WHERE f2.price=f1.price and DATE_FORMAT(f2.optiontime, \"%Y-%m-%d\")=f1.optiontime";
+        String sql = "SELECT f2.id,f2.flightno,f2.parentname,f2.departuretime,f2.landingtime,f2.departurecity,f2.landingcity,f2.price,f1.optiontime FROM flightinfo f2,(select min(price) price ,DATE_FORMAT(optiontime, \"%Y-%m-%d\") optiontime from flightinfo group by   DATE_FORMAT(optiontime, \"%Y-%m-%d\"))f1 WHERE f2.price=f1.price and DATE_FORMAT(f2.optiontime, \"%Y-%m-%d\")=f1.optiontime";
         return jdbcTemplate.query(sql, new RowMapper<FlightInfo>() {
             @Override
             public FlightInfo mapRow(ResultSet resultSet, int i) throws SQLException {
-                FlightInfo flightInfo=new FlightInfo();
+                FlightInfo flightInfo = new FlightInfo();
+                flightInfo.setId(resultSet.getInt("id"));
+                flightInfo.setFlightNo(resultSet.getString("flightno"));
+                flightInfo.setParentname(resultSet.getString("parentname"));
+                flightInfo.setDeparturetime(resultSet.getTimestamp("departuretime"));
+                flightInfo.setLandingtime(resultSet.getTimestamp("landingtime"));
+                flightInfo.setPrice(resultSet.getDouble("price"));
+                flightInfo.setDeparturecity(resultSet.getString("departurecity"));
+                flightInfo.setLandingcity(resultSet.getString("landingcity"));
+                flightInfo.setOptiontime(resultSet.getTimestamp("optiontime"));
+                return flightInfo;
+            }
+        });
+    }
+
+    @Override
+    public List<Timestamp> findOptionTimes() {
+        String sql = "select distinct(DATE_FORMAT(optiontime, \"%Y-%m-%d\"))optiontime from flightinfo order by optiontime";
+        return jdbcTemplate.query(sql, new RowMapper<Timestamp>() {
+            @Override
+            public Timestamp mapRow(ResultSet resultSet, int i) throws SQLException {
+                Timestamp optiontime = resultSet.getTimestamp("optiontime");
+                return optiontime;
+            }
+        });
+    }
+
+    @Override
+    public List<Timestamp> findDepartureTimes() {
+        String sql = "select distinct(DATE_FORMAT(departuretime, \"%Y-%m-%d\"))departuretime from flightinfo order by departuretime";
+        return jdbcTemplate.query(sql, new RowMapper<Timestamp>() {
+            @Override
+            public Timestamp mapRow(ResultSet resultSet, int i) throws SQLException {
+                Timestamp departuretime = resultSet.getTimestamp("departuretime");
+                return departuretime;
+            }
+        });
+    }
+
+    @Override
+    public List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(String optionStartTimeStr, String optionEndTimeStr, String departureStartTimeStr, String departureEndTimeStr) {
+        Timestamp optionStartTime = Timestamp.valueOf(optionStartTimeStr);
+        Timestamp optionEndTime = Timestamp.valueOf(optionEndTimeStr);
+        Timestamp departureStartTime = Timestamp.valueOf(departureStartTimeStr);
+        Timestamp departureEndTime = Timestamp.valueOf(departureEndTimeStr);
+        String sql="select * from (select * from  flightinfo where optiontime between ? and ?) f where f.departuretime between ? and ?";
+        return jdbcTemplate.query(sql, new Object[]{optionStartTime,optionEndTime,departureStartTime,departureEndTime}, new RowMapper<FlightInfo>() {
+            @Override
+            public FlightInfo mapRow(ResultSet resultSet, int i) throws SQLException {
+                FlightInfo flightInfo = new FlightInfo();
                 flightInfo.setId(resultSet.getInt("id"));
                 flightInfo.setFlightNo(resultSet.getString("flightno"));
                 flightInfo.setParentname(resultSet.getString("parentname"));

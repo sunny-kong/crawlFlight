@@ -9,10 +9,7 @@ import org.junit.Test;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by xj on 15-12-9.
@@ -77,6 +74,59 @@ public class CtripCrawlFilghtDaoImplTest {
             System.out.println(flightInfo);
         }
     }
+    @Test
+    public void testFindOptionTimes(){
+        List<Timestamp> list1=dao.findOptionTimes();
+        List<Timestamp> list2=dao.findDepartureTimes();
+        for(Timestamp optiontime:list1){
+           /* System.out.println(optiontime);
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(optiontime));*/
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(optiontime)+" 23:59:59");
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(optiontime));
 
+
+        }
+
+    }
+    @Test
+    public void testFlightInfoByOptionTimeAndDepartureTime(){
+       /* List<FlightInfo> flightInfoList=dao.findFlightInfoByOptionTimeAndDepartureTime("2015-12-23 00:00:00","2015-12-23 23:59:59","2016-02-05 00:00:00","2016-02-05 23:59:59");
+        Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
+            @Override
+            public int compare(FlightInfo o1, FlightInfo o2) {
+                return (int) (o1.getPrice() - o2.getPrice());
+            }
+        });
+        for(FlightInfo flightInfo:flightInfoList){
+            System.out.println(flightInfo.getFlightNo()+flightInfo.getDeparturetime()+flightInfo.getPrice()+flightInfo.getOptiontime());
+        }*/
+
+        List<Timestamp> optionTimeList=dao.findOptionTimes();
+        System.out.println("@@@@@@@@"+optionTimeList);
+        List<Timestamp> departureTimeList=dao.findDepartureTimes();
+        List<FlightInfo> flightInfoListlowPrice=new ArrayList<FlightInfo>();
+        for(Timestamp optionTime:optionTimeList){
+            for(Timestamp departureTime:departureTimeList){
+                SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd");
+                String optionStartTime=sdf1.format(optionTime);
+                String optionEndTime=sdf2.format(optionTime)+" 23:59:59";
+                String departureStartTime=sdf1.format(departureTime);
+                String departureEndTime=sdf2.format(departureTime)+" 23:59:59";
+                List<FlightInfo> flightInfoList=dao.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime,optionEndTime,departureStartTime,departureEndTime);
+                Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
+                    @Override
+                    public int compare(FlightInfo o1, FlightInfo o2) {
+                        return (int) (o1.getPrice()-o2.getPrice());
+                    }
+                });
+                flightInfoListlowPrice.add(flightInfoList.get(0));
+            }
+        }
+
+        for(FlightInfo flightInfo:flightInfoListlowPrice){
+            System.out.println(flightInfo.getFlightNo()+"   "+flightInfo.getDeparturetime()+"   "+flightInfo.getPrice()+"   "+flightInfo.getOptiontime());
+        }
+    }
 
 }
