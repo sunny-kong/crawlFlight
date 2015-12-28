@@ -10,6 +10,7 @@
 <html>
 <head>
     <title></title>
+  <script src="js/monitor.js"></script>
 </head>
 <body>
 

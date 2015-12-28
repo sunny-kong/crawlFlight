@@ -167,4 +167,16 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
             }
         });
     }
+
+    @Override
+    public List<Timestamp> findOptionTimesByHourse() {
+        String sql = "select distinct(DATE_FORMAT(optiontime, \"%Y-%m-%d %H:00:00\"))optiontime from flightinfo order by optiontime";
+        return jdbcTemplate.query(sql, new RowMapper<Timestamp>() {
+            @Override
+            public Timestamp mapRow(ResultSet resultSet, int i) throws SQLException {
+                Timestamp optiontime = resultSet.getTimestamp("optiontime");
+                return optiontime;
+            }
+        });
+    }
 }

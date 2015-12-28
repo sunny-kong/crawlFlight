@@ -25,4 +25,6 @@ public interface CrawlFlightDao {
     List<Timestamp> findDepartureTimes();
 
     List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(String optionStartTime, String optionEndTime, String departureStartTime, String departureEndTime);
+
+    List<Timestamp> findOptionTimesByHourse();
 }

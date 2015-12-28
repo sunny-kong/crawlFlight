@@ -11,6 +11,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,5 +45,17 @@ public class Util {
             return new XSSFWorkbook(OPCPackage.open(inp));
         }
         throw new IllegalArgumentException("你的excel版本目前poi解析不了");
+    }
+
+    public static List<Timestamp> getTimeRange(Timestamp startTime, Timestamp endTime) {
+        List<Timestamp> timeRanges = new ArrayList();
+        for (; startTime.before(endTime) || startTime.equals(endTime); ) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(startTime);
+            timeRanges.add(new Timestamp(cal.getTimeInMillis()));
+            cal.add(Calendar.HOUR_OF_DAY, 1);
+            startTime.setTime(cal.getTimeInMillis()); int totalNum=timeRanges.size();
+        }
+        return timeRanges;
     }
 }
