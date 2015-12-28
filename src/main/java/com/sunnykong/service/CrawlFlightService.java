@@ -22,4 +22,10 @@ public interface CrawlFlightService {
     public double findLowPrice(String flightno, Timestamp timeRange);
 
     List<FlightInfo> findLowPriceFlightInfoByDay();
+
+    List<Timestamp> findOptionTimes();
+
+    List<Timestamp> findDepartureTimes();
+
+    List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(String optionStartTime, String optionEndTime, String departureStartTime, String departureEndTime);
 }

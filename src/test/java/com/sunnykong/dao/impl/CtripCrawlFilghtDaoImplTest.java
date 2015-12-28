@@ -4,15 +4,14 @@ import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.dao.CrawlFlightDao;
 import com.sunnykong.utils.MapToBeanUtil;
+import com.sunnykong.utils.Util;
 import org.junit.Test;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by xj on 15-12-9.
@@ -70,13 +69,137 @@ public class CtripCrawlFilghtDaoImplTest {
         double price = dao.findLowPrice("CA1265", Timestamp.valueOf("2016-02-07 11:30:00"));
         System.out.println("同一航班最低票价为：" + price);
     }
+
     @Test
-    public void testLowPriceByDay(){
-        List<FlightInfo> flightInfoList=dao.findLowPriceFlightInfoByDay();
-        for(FlightInfo flightInfo:flightInfoList){
+    public void testLowPriceByDay() {
+        List<FlightInfo> flightInfoList = dao.findLowPriceFlightInfoByDay();
+        for (FlightInfo flightInfo : flightInfoList) {
             System.out.println(flightInfo);
         }
     }
 
+    @Test
+    public void testFindOptionTimes() {
+        List<Timestamp> list1 = dao.findOptionTimes();
+        List<Timestamp> list2 = dao.findDepartureTimes();
+        for (Timestamp optiontime : list1) {
+           /* System.out.println(optiontime);
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(optiontime));*/
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(optiontime) + " 23:59:59");
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(optiontime));
+
+
+        }
+
+    }
+
+    @Test
+    public void testFlightInfoByOptionTimeAndDepartureTime() {
+       /* List<FlightInfo> flightInfoList=dao.findFlightInfoByOptionTimeAndDepartureTime("2015-12-23 00:00:00","2015-12-23 23:59:59","2016-02-05 00:00:00","2016-02-05 23:59:59");
+        Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
+            @Override
+            public int compare(FlightInfo o1, FlightInfo o2) {
+                return (int) (o1.getPrice() - o2.getPrice());
+            }
+        });
+        for(FlightInfo flightInfo:flightInfoList){
+            System.out.println(flightInfo.getFlightNo()+flightInfo.getDeparturetime()+flightInfo.getPrice()+flightInfo.getOptiontime());
+        }*/
+
+        List<Timestamp> optionTimeList = dao.findOptionTimes();
+        System.out.println("@@@@@@@@" + optionTimeList);
+        List<Timestamp> departureTimeList = dao.findDepartureTimes();
+        List<FlightInfo> flightInfoListlowPrice = new ArrayList<FlightInfo>();
+        for (Timestamp optionTime : optionTimeList) {
+            for (Timestamp departureTime : departureTimeList) {
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+                String optionStartTime = sdf1.format(optionTime);
+                String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
+                String departureStartTime = sdf1.format(departureTime);
+                String departureEndTime = sdf2.format(departureTime) + " 23:59:59";
+                List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+                Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
+                    @Override
+                    public int compare(FlightInfo o1, FlightInfo o2) {
+                        return (int) (o1.getPrice() - o2.getPrice());
+                    }
+                });
+                flightInfoListlowPrice.add(flightInfoList.get(0));
+            }
+        }
+
+        for (FlightInfo flightInfo : flightInfoListlowPrice) {
+            System.out.println(flightInfo.getFlightNo() + "   " + flightInfo.getDeparturetime() + "   " + flightInfo.getPrice() + "   " + flightInfo.getOptiontime());
+        }
+    }
+
+    @Test
+    public void testOneHourseFlightInfo() {//2016-02-05在一个月内，每天的最低票价
+
+        List<FlightInfo> newFlightLists = new ArrayList<FlightInfo>();
+        List<Timestamp> optionTimeList = dao.findOptionTimesByHourse();
+//        System.out.println(optionTimeList);
+            for (Timestamp optionTime : optionTimeList) {
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+                String departureStartTime="2016-02-05 00:00:00";
+                String departureEndTime="2016-02-05 23:59:59";
+                String optionStartTime = sdf1.format(optionTime);
+                String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
+                List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+                for (FlightInfo flightInfo : flightInfoList) {
+                    flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
+                }
+                System.out.println("--------------------------------------");
+
+                List<Timestamp> timeRange = Util.getTimeRange(Timestamp.valueOf(optionStartTime), Timestamp.valueOf(optionEndTime));
+
+                for (Timestamp timestamp : timeRange) {
+                    System.out.println(timestamp);
+                    List<FlightInfo> flightInfoList1=new ArrayList<FlightInfo>();
+                    for(FlightInfo flightInfo:flightInfoList){
+                        if(timestamp.equals(flightInfo.getOptiontime())){
+                            flightInfoList1.add(flightInfo);
+                        }else{
+                            break;
+                        }
+                    }
+                        Collections.sort(flightInfoList1, new Comparator<FlightInfo>() {
+                            @Override
+                            public int compare(FlightInfo o1, FlightInfo o2) {
+                                return (int) (o1.getPrice()-o2.getPrice());
+                            }
+                        });
+                        newFlightLists.add(flightInfoList1.get(0));
+                    }
+
+
+
+              /*  for (Timestamp timestamp : timeRange) {
+                    System.out.println(timestamp);
+                    List<FlightInfo> flightInfoList1=new ArrayList<FlightInfo>();
+                    for(FlightInfo flightInfo:flightInfoList){
+                        if(timestamp.equals(flightInfo.getOptiontime())){
+                            flightInfoList1.add(flightInfo);
+                        }else{
+                            break;
+                        }
+                    }
+                    Collections.sort(flightInfoList1, new Comparator<FlightInfo>() {
+                        @Override
+                        public int compare(FlightInfo o1, FlightInfo o2) {
+                            return (int) (o1.getPrice()-o2.getPrice());
+                        }
+                    });
+                    newFlightLists.add(flightInfoList1.get(0));
+                }*/
+
+        }
+
+        for(FlightInfo flightInfo:newFlightLists){
+            System.out.println(flightInfo.getFlightNo()+" "+flightInfo.getDeparturetime()+" "+flightInfo.getPrice()+" "+flightInfo.getOptiontime());
+        }
+    }
 
 }

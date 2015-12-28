@@ -21,9 +21,9 @@ import java.util.List;
 /**
  * Created by KXJ on 2015-12-09.
  */
-public class QunarCrawlFilghtServiceImpl implements CrawlFlightService {
+public class QunarCrawlFilghtServiceImpl{
 
-    @Override
+/*    @Override
     public List<FlightInfo> crawl(AirPortCity from, AirPortCity to, String date) throws IOException {
         List<Header> headers = buildHeaders();
         CloseableHttpClient httpClient = HttpClients.custom().setDefaultHeaders(headers).build();
@@ -77,6 +77,16 @@ public class QunarCrawlFilghtServiceImpl implements CrawlFlightService {
     public List<FlightInfo> findLowPriceFlightInfoByDay() {
         return null;
     }
+
+    @Override
+    public List<Timestamp> findOptionTimes() {
+        return null;
+    }
+
+    @Override
+    public List<Timestamp> findDepartureTimes() {
+        return null;
+    }*/
 
     private List<Header> buildHeaders() {
         List<Header> headerList = new ArrayList<Header>();
