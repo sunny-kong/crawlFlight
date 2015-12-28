@@ -1,13 +1,11 @@
 package com.sunnykong.dao.impl;
 
-import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.dao.CrawlFlightDao;
 import com.sunnykong.utils.MapToBeanUtil;
 import com.sunnykong.utils.Util;
 import org.junit.Test;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -151,12 +149,12 @@ public class CtripCrawlFilghtDaoImplTest {
                 for (FlightInfo flightInfo : flightInfoList) {
                     flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
                 }
-                System.out.println("--------------------------------------");
+//                System.out.println("--------------------------------------");
 
                 List<Timestamp> timeRange = Util.getTimeRange(Timestamp.valueOf(optionStartTime), Timestamp.valueOf(optionEndTime));
 
                 for (Timestamp timestamp : timeRange) {
-                    System.out.println(timestamp);
+//                    System.out.println(timestamp);
                     List<FlightInfo> flightInfoList1=new ArrayList<FlightInfo>();
                     for(FlightInfo flightInfo:flightInfoList){
                         if(timestamp.equals(flightInfo.getOptiontime())){
@@ -165,13 +163,21 @@ public class CtripCrawlFilghtDaoImplTest {
                             break;
                         }
                     }
+                    if (flightInfoList1.size() > 0) {
                         Collections.sort(flightInfoList1, new Comparator<FlightInfo>() {
                             @Override
                             public int compare(FlightInfo o1, FlightInfo o2) {
-                                return (int) (o1.getPrice()-o2.getPrice());
+                                return (int) (o1.getPrice() - o2.getPrice());
                             }
                         });
-                        newFlightLists.add(flightInfoList1.get(0));
+                        boolean have=false;
+                        FlightInfo flightInfo = flightInfoList1.get(0);
+                        for (FlightInfo newFlightList : newFlightLists) {
+                            have |= newFlightList.getFlightNo().equals(flightInfo.getFlightNo()) && newFlightList.getOptiontime().equals(flightInfo.getOptiontime());
+                        }
+                        if(!have)
+                        newFlightLists.add(flightInfo);
+                    }
                     }
 
 
