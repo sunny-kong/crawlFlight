@@ -21,19 +21,42 @@ import java.util.*;
  */
 public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
     CrawlFlightService crawlFlightService = new CtripCrawlFlightServiceImpl();
-    Timer timer = new Timer();
+    Timer timer1 = new Timer();
+    Timer timer2 = new Timer();
     Date currentTime = new Date();
     //    String timeStr="2016-02-05";
-    String[] dataArry = new String[]{"2016-02-01", "2016-02-02", "2016-02-03", "2016-02-04", "2016-02-05", "2016-02-06", "2016-02-07"};
-
+    String[] dataArry1 = new String[]{"2016-02-01", "2016-02-02", "2016-02-03", "2016-02-04", "2016-02-05", "2016-02-06", "2016-02-07"};
+    String[] dataArry2 = new String[]{"2016-02-13", "2016-02-14", "2016-02-15", "2016-02-16"};
     public void init() {
-        timer.schedule(new TimerTask() {
+        timer1.schedule(new TimerTask() {
             @Override
             public void run() {
-                for (String date : dataArry) {
+                System.out.println("保存呼和浩特到乌鲁木齐的机票信息------------------------------");
+                for (String date : dataArry1) {
                     List<FlightInfo> flightInfoList = null;
                     try {
                         flightInfoList = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, date);
+                        System.out.println(flightInfoList);
+                        for (FlightInfo flightInfo : flightInfoList) {
+                            crawlFlightService.saveFlightInfo(flightInfo);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }, currentTime, 3600 * 1000L);
+        timer2.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("保存乌鲁木齐到呼和浩特的机票信息-----------------------------------");
+                for (String date : dataArry2) {
+                    List<FlightInfo> flightInfoList = null;
+                    try {
+                        flightInfoList = crawlFlightService.crawl(AirPortCity.URC,AirPortCity.HET,  date);
                         System.out.println(flightInfoList);
                         for (FlightInfo flightInfo : flightInfoList) {
                             crawlFlightService.saveFlightInfo(flightInfo);

@@ -188,16 +188,16 @@ public class CtripCrawlFilghtDaoImplTest {
         List<String> nameList = new ArrayList<String>();
         List<List<Double>> valuesList = new ArrayList<List<Double>>();
 
-        Map<String,List<FlightInfo>> flightInfoMap=new LinkedHashMap<String, List<FlightInfo>>();
+        Map<String, List<FlightInfo>> flightInfoMap = new LinkedHashMap<String, List<FlightInfo>>();
 
-        for(FlightInfo flightInfo:newFlightLists){
-            String optiontimeStr=new SimpleDateFormat("yyyy-MM-dd").format(flightInfo.getOptiontime());
-            if(flightInfoMap.containsKey(optiontimeStr)){
+        for (FlightInfo flightInfo : newFlightLists) {
+            String optiontimeStr = new SimpleDateFormat("yyyy-MM-dd").format(flightInfo.getOptiontime());
+            if (flightInfoMap.containsKey(optiontimeStr)) {
                 flightInfoMap.get(optiontimeStr).add(flightInfo);
-            }else{
-                List<FlightInfo> flightInfos=new ArrayList<FlightInfo>();
+            } else {
+                List<FlightInfo> flightInfos = new ArrayList<FlightInfo>();
                 flightInfos.add(flightInfo);
-                flightInfoMap.put(optiontimeStr,flightInfos);
+                flightInfoMap.put(optiontimeStr, flightInfos);
             }
         }
 
@@ -206,22 +206,27 @@ public class CtripCrawlFilghtDaoImplTest {
             System.out.println(key+" "+flightInfoMap.get(key));
         }*/
 
-        for(String key:flightInfoMap.keySet()){
+        for (String key : flightInfoMap.keySet()) {
             nameList.add(key);
-            List<FlightInfo> flightInfoListValues=flightInfoMap.get(key);
-            Timestamp timeStart=Timestamp.valueOf(key+" 00:00:00");
-            Timestamp timeEnd=Timestamp.valueOf(key+" 23:59:59");
-            List<Timestamp> timestampList=Util.getTimeRange(timeStart,timeEnd);
-            System.out.println("@@@@@@@@@@@@"+timestampList);
+            List<FlightInfo> flightInfoListValues = flightInfoMap.get(key);
+            Timestamp timeStart = Timestamp.valueOf(key + " 00:00:00");
+            Timestamp timeEnd = Timestamp.valueOf(key + " 23:59:59");
+            List<Timestamp> timestampList = Util.getTimeRange(timeStart, timeEnd);
+            System.out.println("@@@@@@@@@@@@" + timestampList);
             System.out.println("-------------------------------------");
             List<Double> flightPrice = new ArrayList<Double>();
-            for(FlightInfo flightInfo:flightInfoListValues){
-                for(Timestamp timestamp:timestampList){
-                    if(timestamp.equals(flightInfo.getOptiontime())){
+
+            for (Timestamp timestamp : timestampList) {
+                boolean isAdd=false;
+                for (FlightInfo flightInfo : flightInfoListValues) {
+
+                    if (timestamp.equals(flightInfo.getOptiontime())) {
                         flightPrice.add(flightInfo.getPrice());
-                    }else{
-                        flightPrice.add(0.0);
+                        isAdd=true;
                     }
+                }
+                if(!isAdd){
+                    flightPrice.add(0.0);
                 }
             }
             valuesList.add(flightPrice);
@@ -229,18 +234,20 @@ public class CtripCrawlFilghtDaoImplTest {
         }
 
         System.out.println(valuesList);
-    }
-@Test
-    public void test(){
-    List<String> optionTimeStrList=new ArrayList<String>();
-    List<String> nameList=new ArrayList<String>();
-    List<List<Double>> valuesList=new ArrayList<List<Double>>();
 
-    List<Timestamp> optionsLists=Util.getTimeRange(Timestamp.valueOf("2015-12-15 00:00:00"),Timestamp.valueOf("2015-12-15 23:59:59"));
-    for(Timestamp timestamp:optionsLists){
-        String timeStr=new SimpleDateFormat("HH").format(timestamp);
-        optionTimeStrList.add(timeStr);
     }
-    System.out.println(optionTimeStrList.toString());
-}
+
+    @Test
+    public void test() {
+        List<String> optionTimeStrList = new ArrayList<String>();
+        List<String> nameList = new ArrayList<String>();
+        List<List<Double>> valuesList = new ArrayList<List<Double>>();
+
+        List<Timestamp> optionsLists = Util.getTimeRange(Timestamp.valueOf("2015-12-15 00:00:00"), Timestamp.valueOf("2015-12-15 23:59:59"));
+        for (Timestamp timestamp : optionsLists) {
+            String timeStr = new SimpleDateFormat("HH").format(timestamp);
+            optionTimeStrList.add(timeStr);
+        }
+        System.out.println(optionTimeStrList.toString());
+    }
 }

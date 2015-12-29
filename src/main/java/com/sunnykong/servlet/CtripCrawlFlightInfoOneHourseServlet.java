@@ -95,30 +95,27 @@ public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
         }
 
         //构建valuesList={{1000,1000,999,999,...1280},{1000,1000,999,999,...1280},{1000,1000,999,999,...1280},...}
-        for(String key:flightInfoMap.keySet()){
+        for (String key : flightInfoMap.keySet()) {
             nameList.add(key);
-            List<FlightInfo> flightInfoListValues=flightInfoMap.get(key);
-            Timestamp timeStart=Timestamp.valueOf(key+"00:00:00");
-            Timestamp timeEnd=Timestamp.valueOf(key+"23:59:59");
-            List<Timestamp> timestampList=Util.getTimeRange(timeStart,timeEnd);
+            List<FlightInfo> flightInfoListValues = flightInfoMap.get(key);
+            Timestamp timeStart = Timestamp.valueOf(key + " 00:00:00");
+            Timestamp timeEnd = Timestamp.valueOf(key + " 23:59:59");
+            List<Timestamp> timestampList = Util.getTimeRange(timeStart, timeEnd);
             List<Double> flightPrice = new ArrayList<Double>();
-            for(FlightInfo flightInfo:flightInfoListValues){
-                for(Timestamp timestamp:timestampList){
-                    if(timestamp.equals(flightInfo.getOptiontime())){
+            for (Timestamp timestamp : timestampList) {//循环24小时
+                boolean isAdd = false;
+                for (FlightInfo flightInfo : flightInfoListValues) {
+                    if (timestamp.equals(flightInfo.getOptiontime())) {
                         flightPrice.add(flightInfo.getPrice());
-                    }else{
-                        flightPrice.add(0.0);
+                        isAdd = true;
                     }
+                }
+                if (!isAdd) {
+                    flightPrice.add(0.0);
                 }
             }
             valuesList.add(flightPrice);
-
         }
-
-
-
-
-
 
 
         Map<String, Object> json = new HashMap<String, Object>();

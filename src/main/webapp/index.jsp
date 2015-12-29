@@ -19,16 +19,19 @@
       选择查询日期:<input name="" /><br>
       选择出发日期：<input name=""/><br>
       <button>航班信息</button>
-      <button>按日查询</button>
-      <button id="byMonth" onclick="findByMonth()">按周查询</button>
+      <button  onclick="findByday()">按日查询</button>
+      <button id="byMonth" onclick="findByWeek()">按周查询</button>
       <div id="data" style="height: 500px"></div>
 
 </div>
 
 </body>
 <script type="text/javascript">
-  function findByMonth(){
+  function findByWeek(){
     window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneDay.jsp";
   }
+    function findByday(){
+        window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneHourse.jsp";
+    }
 </script>
 </html>
