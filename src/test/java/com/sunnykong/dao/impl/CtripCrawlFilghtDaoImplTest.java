@@ -215,14 +215,16 @@ public class CtripCrawlFilghtDaoImplTest {
             System.out.println("@@@@@@@@@@@@"+timestampList);
             System.out.println("-------------------------------------");
             List<Double> flightPrice = new ArrayList<Double>();
-            for(FlightInfo flightInfo:flightInfoListValues){
-                for(Timestamp timestamp:timestampList){
-                    if(timestamp.equals(flightInfo.getOptiontime())){
+            for (Timestamp timestamp : timestampList) {
+                boolean added=false;
+                for (FlightInfo flightInfo : flightInfoListValues) {
+                    if (timestamp.equals(flightInfo.getOptiontime())) {
                         flightPrice.add(flightInfo.getPrice());
-                    }else{
-                        flightPrice.add(0.0);
+                        added=true;
                     }
                 }
+                if(!added)
+                    flightPrice.add(0.0);
             }
             valuesList.add(flightPrice);
 
