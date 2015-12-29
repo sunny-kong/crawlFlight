@@ -138,74 +138,109 @@ public class CtripCrawlFilghtDaoImplTest {
         List<FlightInfo> newFlightLists = new ArrayList<FlightInfo>();
         List<Timestamp> optionTimeList = dao.findOptionTimesByHourse();
 //        System.out.println(optionTimeList);
-            for (Timestamp optionTime : optionTimeList) {
-                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-                String departureStartTime="2016-02-05 00:00:00";
-                String departureEndTime="2016-02-05 23:59:59";
-                String optionStartTime = sdf1.format(optionTime);
-                String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
-                List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+        for (Timestamp optionTime : optionTimeList) {
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+            String departureStartTime = "2016-02-05 00:00:00";
+            String departureEndTime = "2016-02-05 23:59:59";
+            String optionStartTime = sdf1.format(optionTime);
+            String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
+            List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+            for (FlightInfo flightInfo : flightInfoList) {
+                flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
+            }
+
+            List<Timestamp> timeRange = Util.getTimeRange(Timestamp.valueOf(optionStartTime), Timestamp.valueOf(optionEndTime));
+
+            for (Timestamp timestamp : timeRange) {
+//                System.out.println(timestamp);
+                List<FlightInfo> flightInfoList1 = new ArrayList<FlightInfo>();
                 for (FlightInfo flightInfo : flightInfoList) {
-                    flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
+                    if (timestamp.equals(flightInfo.getOptiontime())) {
+                        flightInfoList1.add(flightInfo);
+                    } else {
+                        break;
+                    }
                 }
-//                System.out.println("--------------------------------------");
-
-                List<Timestamp> timeRange = Util.getTimeRange(Timestamp.valueOf(optionStartTime), Timestamp.valueOf(optionEndTime));
-
-                for (Timestamp timestamp : timeRange) {
-//                    System.out.println(timestamp);
-                    List<FlightInfo> flightInfoList1=new ArrayList<FlightInfo>();
-                    for(FlightInfo flightInfo:flightInfoList){
-                        if(timestamp.equals(flightInfo.getOptiontime())){
-                            flightInfoList1.add(flightInfo);
-                        }else{
-                            break;
-                        }
-                    }
-                    if (flightInfoList1.size() > 0) {
-                        Collections.sort(flightInfoList1, new Comparator<FlightInfo>() {
-                            @Override
-                            public int compare(FlightInfo o1, FlightInfo o2) {
-                                return (int) (o1.getPrice() - o2.getPrice());
-                            }
-                        });
-                        boolean have=false;
-                        FlightInfo flightInfo = flightInfoList1.get(0);
-                        for (FlightInfo newFlightList : newFlightLists) {
-                            have |= newFlightList.getFlightNo().equals(flightInfo.getFlightNo()) && newFlightList.getOptiontime().equals(flightInfo.getOptiontime());
-                        }
-                        if(!have)
-                        newFlightLists.add(flightInfo);
-                    }
-                    }
-
-
-
-              /*  for (Timestamp timestamp : timeRange) {
-                    System.out.println(timestamp);
-                    List<FlightInfo> flightInfoList1=new ArrayList<FlightInfo>();
-                    for(FlightInfo flightInfo:flightInfoList){
-                        if(timestamp.equals(flightInfo.getOptiontime())){
-                            flightInfoList1.add(flightInfo);
-                        }else{
-                            break;
-                        }
-                    }
+                if (flightInfoList1.size() > 0) {
                     Collections.sort(flightInfoList1, new Comparator<FlightInfo>() {
                         @Override
                         public int compare(FlightInfo o1, FlightInfo o2) {
-                            return (int) (o1.getPrice()-o2.getPrice());
+                            return (int) (o1.getPrice() - o2.getPrice());
                         }
                     });
-                    newFlightLists.add(flightInfoList1.get(0));
-                }*/
+                    boolean have = false;
+                    FlightInfo flightInfo = flightInfoList1.get(0);
+                    for (FlightInfo newFlightList : newFlightLists) {
+                        have |= newFlightList.getFlightNo().equals(flightInfo.getFlightNo()) && newFlightList.getOptiontime().equals(flightInfo.getOptiontime());
+                    }
+                    if (!have)
+                        newFlightLists.add(flightInfo);
+                }
+            }
 
         }
+
+       /* for (FlightInfo flightInfo : newFlightLists) {
+            System.out.println(flightInfo.getFlightNo() + " " + flightInfo.getDeparturetime() + " " + flightInfo.getPrice() + " " + flightInfo.getOptiontime());
+        }*/
+        List<String> optionTimeStrList = new ArrayList<String>();
+        List<String> nameList = new ArrayList<String>();
+        List<List<Double>> valuesList = new ArrayList<List<Double>>();
+
+        Map<String,List<FlightInfo>> flightInfoMap=new LinkedHashMap<String, List<FlightInfo>>();
 
         for(FlightInfo flightInfo:newFlightLists){
-            System.out.println(flightInfo.getFlightNo()+" "+flightInfo.getDeparturetime()+" "+flightInfo.getPrice()+" "+flightInfo.getOptiontime());
+            String optiontimeStr=new SimpleDateFormat("yyyy-MM-dd").format(flightInfo.getOptiontime());
+            if(flightInfoMap.containsKey(optiontimeStr)){
+                flightInfoMap.get(optiontimeStr).add(flightInfo);
+            }else{
+                List<FlightInfo> flightInfos=new ArrayList<FlightInfo>();
+                flightInfos.add(flightInfo);
+                flightInfoMap.put(optiontimeStr,flightInfos);
+            }
         }
-    }
 
+
+      /*  for (String key:flightInfoMap.keySet()){
+            System.out.println(key+" "+flightInfoMap.get(key));
+        }*/
+
+        for(String key:flightInfoMap.keySet()){
+            nameList.add(key);
+            List<FlightInfo> flightInfoListValues=flightInfoMap.get(key);
+            Timestamp timeStart=Timestamp.valueOf(key+" 00:00:00");
+            Timestamp timeEnd=Timestamp.valueOf(key+" 23:59:59");
+            List<Timestamp> timestampList=Util.getTimeRange(timeStart,timeEnd);
+            System.out.println("@@@@@@@@@@@@"+timestampList);
+            System.out.println("-------------------------------------");
+            List<Double> flightPrice = new ArrayList<Double>();
+            for(FlightInfo flightInfo:flightInfoListValues){
+                for(Timestamp timestamp:timestampList){
+                    if(timestamp.equals(flightInfo.getOptiontime())){
+                        flightPrice.add(flightInfo.getPrice());
+                    }else{
+                        flightPrice.add(0.0);
+                    }
+                }
+            }
+            valuesList.add(flightPrice);
+
+        }
+
+        System.out.println(valuesList);
+    }
+@Test
+    public void test(){
+    List<String> optionTimeStrList=new ArrayList<String>();
+    List<String> nameList=new ArrayList<String>();
+    List<List<Double>> valuesList=new ArrayList<List<Double>>();
+
+    List<Timestamp> optionsLists=Util.getTimeRange(Timestamp.valueOf("2015-12-15 00:00:00"),Timestamp.valueOf("2015-12-15 23:59:59"));
+    for(Timestamp timestamp:optionsLists){
+        String timeStr=new SimpleDateFormat("HH").format(timestamp);
+        optionTimeStrList.add(timeStr);
+    }
+    System.out.println(optionTimeStrList.toString());
+}
 }

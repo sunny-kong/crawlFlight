@@ -110,5 +110,10 @@ public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
         return crawlFlightDao.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime,optionEndTime,departureStartTime,departureEndTime);
     }
 
+    @Override
+    public List<Timestamp> findOptionTimesByHourse() {
+        return crawlFlightDao.findOptionTimesByHourse();
+    }
+
 
 }
