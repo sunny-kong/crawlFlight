@@ -85,14 +85,18 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
                 String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
                 String departureStartTime = sdf1.format(departureTime);
                 String departureEndTime = sdf2.format(departureTime) + " 23:59:59";
-                List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime, optionEndTime, departureStartTime, departureEndTime);
-                Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
-                    @Override
-                    public int compare(FlightInfo o1, FlightInfo o2) {
-                        return (int) (o1.getPrice() - o2.getPrice());
-                    }
-                });
-                flightInfoListlowPrice.add(flightInfoList.get(0));
+                List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(AirPortCity.HET,AirPortCity.URC,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+
+                if(flightInfoList.size()>0){
+                    Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
+                        @Override
+                        public int compare(FlightInfo o1, FlightInfo o2) {
+                            return (int) (o1.getPrice() - o2.getPrice());
+                        }
+                    });
+                    flightInfoListlowPrice.add(flightInfoList.get(0));
+                }
+
             }
         }
 

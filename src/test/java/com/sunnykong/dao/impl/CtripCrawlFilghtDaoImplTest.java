@@ -1,5 +1,6 @@
 package com.sunnykong.dao.impl;
 
+import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.dao.CrawlFlightDao;
 import com.sunnykong.utils.MapToBeanUtil;
@@ -116,7 +117,7 @@ public class CtripCrawlFilghtDaoImplTest {
                 String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
                 String departureStartTime = sdf1.format(departureTime);
                 String departureEndTime = sdf2.format(departureTime) + " 23:59:59";
-                List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+                List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(AirPortCity.HET,AirPortCity.URC,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
                 Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
                     @Override
                     public int compare(FlightInfo o1, FlightInfo o2) {
@@ -145,7 +146,7 @@ public class CtripCrawlFilghtDaoImplTest {
             String departureEndTime = "2016-02-05 23:59:59";
             String optionStartTime = sdf1.format(optionTime);
             String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
-            List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+            List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(AirPortCity.HET,AirPortCity.URC,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
             for (FlightInfo flightInfo : flightInfoList) {
                 flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
             }
@@ -249,5 +250,13 @@ public class CtripCrawlFilghtDaoImplTest {
             optionTimeStrList.add(timeStr);
         }
         System.out.println(optionTimeStrList.toString());
+    }
+    @Test
+    public void test1(){
+
+        List<FlightInfo> flightInfoList = dao.findFlightInfoByOptionTimeAndDepartureTime(AirPortCity.HET,AirPortCity.URC,"2015-12-18 00:00:00", "2015-12-18 23:59:59","2016-02-05 00:00:00", "2016-02-05 23:59:59");
+    for(FlightInfo flightInfo:flightInfoList){
+        System.out.println(flightInfo.getFlightNo());
+    }
     }
 }

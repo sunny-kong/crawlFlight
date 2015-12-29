@@ -24,10 +24,17 @@
     <servlet>
         <servlet-name>Ctripcrawlonehourseservlet</servlet-name>
         <servlet-class>com.sunnykong.servlet.CtripCrawlFlightInfoOneHourseServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Ctripcrawlonehourseservlet</servlet-name>
         <url-pattern>/ctripcrawlonehourseservlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ShowFlightInfoServlet</servlet-name>
+        <servlet-class>com.sunnykong.servlet.ShowFlightInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ShowFlightInfoServlet</servlet-name>
+        <url-pattern>/showFlightInfo</url-pattern>
     </servlet-mapping>
 </web-app>

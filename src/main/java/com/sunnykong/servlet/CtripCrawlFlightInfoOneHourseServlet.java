@@ -1,5 +1,6 @@
 package com.sunnykong.servlet;
 
+import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.service.CrawlFlightService;
 import com.sunnykong.service.impl.CtripCrawlFlightServiceImpl;
@@ -31,7 +32,7 @@ public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
             String departureEndTime = "2016-02-05 23:59:59";
             String optionStartTime = sdf1.format(optionTime);
             String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
-            List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+            List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(AirPortCity.HET,AirPortCity.URC,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
             for (FlightInfo flightInfo : flightInfoList) {
                 flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
             }

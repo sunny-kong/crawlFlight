@@ -1,5 +1,6 @@
 package com.sunnykong.dao;
 
+import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 
 import java.sql.Timestamp;
@@ -24,7 +25,7 @@ public interface CrawlFlightDao {
 
     List<Timestamp> findDepartureTimes();
 
-    List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(String optionStartTime, String optionEndTime, String departureStartTime, String departureEndTime);
+    List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(AirPortCity departurecity,AirPortCity landingcity,String optionStartTime, String optionEndTime, String departureStartTime, String departureEndTime);
 
     List<Timestamp> findOptionTimesByHourse();
 }

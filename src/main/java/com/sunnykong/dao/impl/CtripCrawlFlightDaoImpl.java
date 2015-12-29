@@ -1,5 +1,6 @@
 package com.sunnykong.dao.impl;
 
+import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.dao.CrawlFlightDao;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -144,13 +145,15 @@ public class CtripCrawlFlightDaoImpl implements CrawlFlightDao {
     }
 
     @Override
-    public List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(String optionStartTimeStr, String optionEndTimeStr, String departureStartTimeStr, String departureEndTimeStr) {
+    public List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(AirPortCity departurecity,AirPortCity landingcity,String optionStartTimeStr, String optionEndTimeStr, String departureStartTimeStr, String departureEndTimeStr) {
         Timestamp optionStartTime = Timestamp.valueOf(optionStartTimeStr);
         Timestamp optionEndTime = Timestamp.valueOf(optionEndTimeStr);
         Timestamp departureStartTime = Timestamp.valueOf(departureStartTimeStr);
         Timestamp departureEndTime = Timestamp.valueOf(departureEndTimeStr);
-        String sql="select * from (select * from  flightinfo where optiontime between ? and ?) f where f.departuretime between ? and ?";
-        return jdbcTemplate.query(sql, new Object[]{optionStartTime,optionEndTime,departureStartTime,departureEndTime}, new RowMapper<FlightInfo>() {
+        String departurecityStr=departurecity.toString();
+        String landingcityStr=landingcity.toString();
+        String sql="select * from (select * from  flightinfo where optiontime between ? and ? AND departurecity=? AND landingcity=?) f where f.departuretime between ? and ?";
+        return jdbcTemplate.query(sql, new Object[]{optionStartTime,optionEndTime,departurecityStr,landingcityStr,departureStartTime,departureEndTime}, new RowMapper<FlightInfo>() {
             @Override
             public FlightInfo mapRow(ResultSet resultSet, int i) throws SQLException {
                 FlightInfo flightInfo = new FlightInfo();

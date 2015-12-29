@@ -27,7 +27,7 @@ public interface CrawlFlightService {
 
     List<Timestamp> findDepartureTimes();
 
-    List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(String optionStartTime, String optionEndTime, String departureStartTime, String departureEndTime);
+    List<FlightInfo> findFlightInfoByOptionTimeAndDepartureTime(AirPortCity departurecity,AirPortCity landingcity,String optionStartTime, String optionEndTime, String departureStartTime, String departureEndTime);
 
     List<Timestamp> findOptionTimesByHourse();
 }
