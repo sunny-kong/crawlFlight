@@ -18,7 +18,7 @@
         echarts: 'js/dist'
       }
     });
-    $.getJSON('/ctripcrawlonehourseservlet', function (json) {
+    $.getJSON('/ctripcrawlonehourseservlet?<%=request.getQueryString()%>', function (json) {
       showCompareEchart(json.optionTime, json.prices, json.departureTime);
     });
 

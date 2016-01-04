@@ -96,8 +96,8 @@ public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
     }
 
     @Override
-    public List<Timestamp> findOptionTimes() {
-        return crawlFlightDao.findOptionTimes();
+    public List<Timestamp> findOptionTimes(AirPortCity departurecity) {
+        return crawlFlightDao.findOptionTimes(departurecity);
     }
 
     @Override
@@ -111,8 +111,8 @@ public class CtripCrawlFlightServiceImpl implements CrawlFlightService {
     }
 
     @Override
-    public List<Timestamp> findOptionTimesByHourse() {
-        return crawlFlightDao.findOptionTimesByHourse();
+    public List<Timestamp> findOptionTimesByHourse(AirPortCity departurecity) {
+        return crawlFlightDao.findOptionTimesByHourse(departurecity);
     }
 
 

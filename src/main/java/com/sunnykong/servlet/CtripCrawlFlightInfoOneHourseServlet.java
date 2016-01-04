@@ -10,6 +10,7 @@ import com.sunnykong.utils.Util;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -20,19 +21,30 @@ import java.util.*;
 public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
     CrawlFlightService crawlFlightService = new CtripCrawlFlightServiceImpl();
 
-    public void service(HttpServletRequest request, HttpServletResponse response) {
+    public void service(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
+
+        String optiontime =request.getParameter("optiontime");
+        String[] optiontimeStrs=optiontime.split("~");
+        String departuretime=request.getParameter("departuretime");
+        AirPortCity departureCity= Enum.valueOf(AirPortCity.class, request.getParameter("departurecity").trim());
+        AirPortCity landingCity=Enum.valueOf(AirPortCity.class, request.getParameter("landingcity").trim());
 
         List<FlightInfo> newFlightLists = new ArrayList<FlightInfo>();
-        List<Timestamp> optionTimeList = crawlFlightService.findOptionTimesByHourse();
+//        List<Timestamp> optionTimeList = crawlFlightService.findOptionTimesByHourse(departureCity);
+        List<Timestamp> optionTimeList = Util.getTimeRange(Timestamp.valueOf(optiontimeStrs[0]+" 00:00:00"), Timestamp.valueOf(optiontimeStrs[1]+" 00:00:00"));
+
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         for (Timestamp optionTime : optionTimeList) {
 
-            String departureStartTime = "2016-02-05 00:00:00";
-            String departureEndTime = "2016-02-05 23:59:59";
+            String departureStartTime = departuretime+" 00:00:00";
+            String departureEndTime = departuretime+" 23:59:59";
             String optionStartTime = sdf1.format(optionTime);
             String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
-            List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(AirPortCity.HET,AirPortCity.URC,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+            List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(departureCity,landingCity,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
             for (FlightInfo flightInfo : flightInfoList) {
                 flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
             }

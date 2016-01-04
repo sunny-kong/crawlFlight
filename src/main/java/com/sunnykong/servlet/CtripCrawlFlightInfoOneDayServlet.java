@@ -15,6 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.sunnykong.bean.AirPortCity.*;
+
 
 /**
  * Created by KXJ on 2015-12-15.
@@ -31,11 +33,11 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
         timer1.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("保存呼和浩特到乌鲁木齐的机票信息------------------------------");
+//                System.out.println("保存呼和浩特到乌鲁木齐的机票信息------------------------------");
                 for (String date : dataArry1) {
                     List<FlightInfo> flightInfoList = null;
                     try {
-                        flightInfoList = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, date);
+                        flightInfoList = crawlFlightService.crawl(AirPortCity.HET,AirPortCity.URC, date);
                         System.out.println(flightInfoList);
                         for (FlightInfo flightInfo : flightInfoList) {
                             crawlFlightService.saveFlightInfo(flightInfo);
@@ -52,7 +54,7 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
         timer2.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("保存乌鲁木齐到呼和浩特的机票信息-----------------------------------");
+//                System.out.println("保存乌鲁木齐到呼和浩特的机票信息-----------------------------------");
                 for (String date : dataArry2) {
                     List<FlightInfo> flightInfoList = null;
                     try {
@@ -73,8 +75,12 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) {
+        String landingcity=request.getParameter("landingcity");
+        String departurecity=request.getParameter("departurecity");
+        AirPortCity departureCity= Enum.valueOf(AirPortCity.class, departurecity.trim());
+        AirPortCity landingCity=Enum.valueOf(AirPortCity.class, landingcity.trim());
         //获取数据库中的起飞时间以及操作时间 yyyy-MM-dd
-        List<Timestamp> optionTimeList = crawlFlightService.findOptionTimes();
+        List<Timestamp> optionTimeList = crawlFlightService.findOptionTimes(departureCity);
         List<Timestamp> departureTimeList = crawlFlightService.findDepartureTimes();
         List<FlightInfo> flightInfoListlowPrice = new ArrayList<FlightInfo>();
         for (Timestamp optionTime : optionTimeList) {
@@ -85,7 +91,7 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
                 String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
                 String departureStartTime = sdf1.format(departureTime);
                 String departureEndTime = sdf2.format(departureTime) + " 23:59:59";
-                List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(AirPortCity.HET,AirPortCity.URC,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+                List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(departureCity, landingCity,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
 
                 if(flightInfoList.size()>0){
                     Collections.sort(flightInfoList, new Comparator<FlightInfo>() {

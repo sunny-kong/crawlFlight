@@ -79,7 +79,7 @@ public class CtripCrawlFilghtDaoImplTest {
 
     @Test
     public void testFindOptionTimes() {
-        List<Timestamp> list1 = dao.findOptionTimes();
+        List<Timestamp> list1 = dao.findOptionTimes(AirPortCity.HET);
         List<Timestamp> list2 = dao.findDepartureTimes();
         for (Timestamp optiontime : list1) {
            /* System.out.println(optiontime);
@@ -105,7 +105,7 @@ public class CtripCrawlFilghtDaoImplTest {
             System.out.println(flightInfo.getFlightNo()+flightInfo.getDeparturetime()+flightInfo.getPrice()+flightInfo.getOptiontime());
         }*/
 
-        List<Timestamp> optionTimeList = dao.findOptionTimes();
+        List<Timestamp> optionTimeList = dao.findOptionTimes(AirPortCity.HET);
         System.out.println("@@@@@@@@" + optionTimeList);
         List<Timestamp> departureTimeList = dao.findDepartureTimes();
         List<FlightInfo> flightInfoListlowPrice = new ArrayList<FlightInfo>();
