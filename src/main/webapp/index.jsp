@@ -1,6 +1,7 @@
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
-<%@ page import="java.util.List" %>
-<%@ page import="com.sunnykong.bean.FlightInfo" %>
+<%@ page import="com.sunnykong.utils.DateUtils" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <%--
   Created by IntelliJ IDEA.
   User: a
@@ -12,30 +13,133 @@
 <html>
 <head>
     <title></title>
+    <!-- Bootstrap 3.3.2 -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <!-- FontAwesome 4.3.0 -->
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <!-- Ionicons 2.0.0 -->
+    <link href="css/ionicons.min.css" rel="stylesheet" type="text/css"/>
+
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link href="plugins/iCheck/all.css" rel="stylesheet" type="text/css"/>
+
+    <%--<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">--%>
+    <link href="css/bootstrap-select.min.css" rel="stylesheet" type="text/css"/>
+    <link href="plugins/timepicker/bootstrap-timepicker.min.css" rel="stylesheet"/>
+    <link href="plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css"/>
     <script src="js/monitor.js"></script>
 </head>
 <body>
 
-<div style="align-content: center">
-    <div>查询信息</div>
-    选择查询日期:<input type="text" name="optiontime" id="optiontime"/><br>
-    选择出发日期：<input type="text" name="departuretime" id="departuretime"/><br>
-    出发城市:<select id="departurecity">
-    <option value="HET">呼和浩特</option>
-    <option value="URC">乌鲁木齐</option>
-</select>
-    降落城市:<select id="landingcity">
-    <option value="HET">呼和浩特</option>
-    <option value="URC">乌鲁木齐</option>
-</select> <br>
-    <button onclick="showInfo()">航班信息</button>
-    <button id="byDay" onclick="findByday()">按日查询</button>
-    <button id="byWeek" onclick="findByWeek()">按周查询</button>
-    <div id="data" style="height: 500px"></div>
-</div>
+<div style="width: 700px;margin-top: 100px;margin-left: 80px">
+    <div class="box-header" style="margin-left: 400px;margin-bottom: 50px">
+        <h3 class="box-title">航班信息</h3>
+    </div>
+    <div class="form-group">
+        <div class="input-group">
+            <label class="col-md-12 control-label"> 选择查询日期</label>
+           <div class="input-group-addon">
+                <i class="fa fa-clock-o"></i>
+            </div>
+            <input type="text" class="form-control form_date pull-right"
+                   id="optiontimeRange" placeholder="区间"
+                   value="<%=DateUtils.getPreviousMonth()%>"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="input-group">
+            <label class="col-md-12 control-label"> 选择出发日期</label>
+            <div class="input-group-addon">
+                <i class="fa fa-clock-o"></i>
+            </div>
+            <input type="text" class="form-control form_date pull-right"
+                   id="departuretime" name="departuretime" placeholder="时间"
+                   value="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" style="margin-right: 120px"> 选择出发城市</label>
+        <select class="selectpicker col-md-12" id="departurecity" name="departurecity"
+                data-style=" form-control"
+                data-width="60%">
+            <option value="HET">呼和浩特</option>
+            <option value="URC">乌鲁木齐</option>
+        </select>
+    </div>
 
+    <div class="form-group">
+        <label class="col-md-2 control-label" style="margin-right: 120px"> 选择降落城市</label>
+        <select class="selectpicker col-md-12" id="landingcity" name="landingcity"
+                data-style=" form-control"
+                data-width="60%">
+            <option value="HET">呼和浩特</option>
+            <option value="URC">乌鲁木齐</option>
+        </select>
+    </div>
+
+    <div class="form-group" style="margin-left: 150px">
+        <button type="button" class="btn btn-success" onclick="findByday()" style="margin-left: 100px">&nbsp;按日查询</button>
+        <button type="button" class="btn btn-success" onclick="findByWeek()" style="margin-left: 50px">&nbsp;按周查询</button>
+        <button type="button" class="btn btn-success" onclick="showInfo()" style="margin-left: 50px">&nbsp;航班信息</button>
+    </div>
+
+    <div class="form-group">
+        <div id="data" style="height: 500px"></div>
+    </div>
+    </div>
 </body>
+
 <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+
+<script src="js/bootstrap-select.min.js" type="text/javascript"></script>
+<!-- daterangepicker -->
+<script src="plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
+<!-- bootstrap time picker -->
+<script src="plugins/timepicker/bootstrap-timepicker.min.js" type="text/javascript"></script>
+<script src="js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="plugins/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+    $(function () {
+        //Date range picker
+        $('#optiontimeRange').daterangepicker({
+                    language: 'zh-CN',
+                    format: 'YYYY-MM-DD', //控件中from和to 显示的日期格式
+                    separator: ' to ',
+                    locale: {
+                        applyLabel: '确定',
+                        cancelLabel: '取消',
+                        fromLabel: '起始时间',
+                        toLabel: '结束时间',
+                        customRangeLabel: '自定义',
+                        daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                        monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                            '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                        firstDay: 1
+                    },
+                    startDate: moment().subtract('days', 29),
+                    endDate: moment()
+                },
+                function (start, end, label) {
+                    $('#reportrange span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+                }
+        );
+    });
+
+    $('.form_date').datetimepicker({
+        language: 'zh-CN',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        format: 'yyyy-mm-dd'
+    });
+
+</script>
 <script type="text/javascript">
     function formatDate(now) {
         var year = now.getYear() + 1900;
@@ -51,14 +155,14 @@
     function findByWeek() {
         var departurecity = $("#departurecity").val();
         var landingcity = $("#landingcity").val();
-        window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneDay.jsp?departurecity="+departurecity+"&landingcity="+landingcity;
+        window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneDay.jsp?departurecity=" + departurecity + "&landingcity=" + landingcity;
     }
     function findByday() {
-        var optiontime=$("#optiontime").val();
-        var departuretime=$("#departuretime").val();
+        var optiontime = $("#optiontimeRange").val();
+        var departuretime = $("#departuretime").val();
         var departurecity = $("#departurecity").val();
         var landingcity = $("#landingcity").val();
-        window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneHourse.jsp?optiontime="+optiontime+"&departuretime="+departuretime+"&departurecity="+departurecity+"&landingcity="+landingcity;
+        window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneHourse.jsp?optiontime=" + optiontime + "&departuretime=" + departuretime + "&departurecity=" + departurecity + "&landingcity=" + landingcity;
     }
     function showInfo() {
         alert(formatDate(new Date()))

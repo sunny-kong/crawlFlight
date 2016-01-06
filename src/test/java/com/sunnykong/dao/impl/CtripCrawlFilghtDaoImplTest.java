@@ -137,7 +137,7 @@ public class CtripCrawlFilghtDaoImplTest {
     public void testOneHourseFlightInfo() {//2016-02-05在一个月内，每天的最低票价
 
         List<FlightInfo> newFlightLists = new ArrayList<FlightInfo>();
-        List<Timestamp> optionTimeList = dao.findOptionTimesByHourse();
+        List<Timestamp> optionTimeList = dao.findOptionTimesByHourse(AirPortCity.HET);
 //        System.out.println(optionTimeList);
         for (Timestamp optionTime : optionTimeList) {
             SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

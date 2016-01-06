@@ -1,0 +1,17 @@
+HTTP/1.1 304 Not Modified
+Date: Mon, 30 Mar 2015 09:09:36 GMT
+Connection: keep-alive
+Last-Modified: Fri, 27 Mar 2015 16:10:33 GMT
+Expires: Sat, 28 Mar 2015 11:38:52 GMT
+Cache-Control: max-age=600
+Access-Control-Allow-Origin: *
+Via: 1.1 varnish
+Age: 0
+X-Served-By: cache-sea1923-SEA
+X-Cache: HIT
+X-Cache-Hits: 1
+X-Timer: S1427689842.322981,VS0,VE85
+Vary: Accept-Encoding
+Server: NetDNA-cache/2.2
+X-Cache: HIT
+

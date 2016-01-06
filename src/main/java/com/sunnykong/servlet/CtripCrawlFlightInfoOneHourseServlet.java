@@ -34,7 +34,7 @@ public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
 
         List<FlightInfo> newFlightLists = new ArrayList<FlightInfo>();
 //        List<Timestamp> optionTimeList = crawlFlightService.findOptionTimesByHourse(departureCity);
-        List<Timestamp> optionTimeList = Util.getTimeRange(Timestamp.valueOf(optiontimeStrs[0]+" 00:00:00"), Timestamp.valueOf(optiontimeStrs[1]+" 00:00:00"));
+        List<Timestamp> optionTimeList = Util.getTimeRange(Timestamp.valueOf(optiontimeStrs[0]+" 00:00:00"), Timestamp.valueOf(optiontimeStrs[1]+" 23:59:59"));
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
