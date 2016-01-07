@@ -25,7 +25,20 @@ public class ShowFlightInfoServlet extends HttpServlet {
     public void service(HttpServletRequest request,HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-        List<FlightInfo> flightInfoList=crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(AirPortCity.HET,AirPortCity.URC,"2015-12-18 00:00:00","2015-12-18 23:59:59","2016-02-05 00:00:00","2016-02-05 23:59:59");
+
+     /*   var optiontime = $("#optiontimeRange").val();
+        var departuretime = $("#departuretime").val();
+        var departurecity = $("#departurecity").val();
+        var landingcity = $("#landingcity").val();*/
+
+        String optiontime=request.getParameter("optiontime");
+        String departuretime=request.getParameter("departuretime");
+        String departurecityStr= request.getParameter("departurecity");
+        String landingcityStr=request.getParameter("landingcity");
+        AirPortCity departurecity=Enum.valueOf(AirPortCity.class,departurecityStr.trim());
+        AirPortCity landingcity=Enum.valueOf(AirPortCity.class,landingcityStr.trim());
+        String[] optiontimestrs=optiontime.split("~");
+        List<FlightInfo> flightInfoList=crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(departurecity,landingcity,optiontimestrs[0]+" 00:00:00",optiontimestrs[1]+" 23:59:59",departuretime+" 00:00:00",departuretime+" 23:59:59");
         Map<String,List<FlightInfo>> json=new HashMap<String, List<FlightInfo>>();
         json.put("flightInfoList",flightInfoList);
 

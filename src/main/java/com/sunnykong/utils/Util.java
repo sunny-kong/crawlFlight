@@ -47,7 +47,7 @@ public class Util {
         throw new IllegalArgumentException("你的excel版本目前poi解析不了");
     }
 
-    public static List<Timestamp> getTimeRange(Timestamp startTime, Timestamp endTime) {
+   /* public static List<Timestamp> getTimeRange(Timestamp startTime, Timestamp endTime) {
         List<Timestamp> timeRanges = new ArrayList();
         for (; startTime.before(endTime) || startTime.equals(endTime); ) {
             Calendar cal = Calendar.getInstance();
@@ -57,5 +57,5 @@ public class Util {
             startTime.setTime(cal.getTimeInMillis()); int totalNum=timeRanges.size();
         }
         return timeRanges;
-    }
+    }*/
 }

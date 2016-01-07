@@ -4,6 +4,7 @@ import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.service.CrawlFlightService;
 import com.sunnykong.service.impl.CtripCrawlFlightServiceImpl;
+import com.sunnykong.utils.DateUtils;
 import com.sunnykong.utils.ToBeJsonUtil;
 import com.sunnykong.utils.Util;
 
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -29,12 +31,15 @@ public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
         String optiontime =request.getParameter("optiontime");
         String[] optiontimeStrs=optiontime.split("~");
         String departuretime=request.getParameter("departuretime");
-        AirPortCity departureCity= Enum.valueOf(AirPortCity.class, request.getParameter("departurecity").trim());
-        AirPortCity landingCity=Enum.valueOf(AirPortCity.class, request.getParameter("landingcity").trim());
+        String departureCityStr=request.getParameter("departurecity").trim();
+        String landingcityStr=request.getParameter("landingcity").trim();
+
+        AirPortCity departureCity= Enum.valueOf(AirPortCity.class,departureCityStr );
+        AirPortCity landingCity=Enum.valueOf(AirPortCity.class,landingcityStr );
 
         List<FlightInfo> newFlightLists = new ArrayList<FlightInfo>();
 //        List<Timestamp> optionTimeList = crawlFlightService.findOptionTimesByHourse(departureCity);
-        List<Timestamp> optionTimeList = Util.getTimeRange(Timestamp.valueOf(optiontimeStrs[0]+" 00:00:00"), Timestamp.valueOf(optiontimeStrs[1]+" 23:59:59"));
+        List<Timestamp> optionTimeList = DateUtils.getTimeRange(Timestamp.valueOf(optiontimeStrs[0] + " 00:00:00"), Timestamp.valueOf(optiontimeStrs[1] + " 23:59:59"));
 
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
@@ -49,7 +54,7 @@ public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
                 flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
             }
 
-            List<Timestamp> timeRange = Util.getTimeRange(Timestamp.valueOf(optionStartTime), Timestamp.valueOf(optionEndTime));
+            List<Timestamp> timeRange = DateUtils.getTimeRange(Timestamp.valueOf(optionStartTime), Timestamp.valueOf(optionEndTime));
 
             for (Timestamp timestamp : timeRange) {
                 List<FlightInfo> flightInfoList1 = new ArrayList<FlightInfo>();
@@ -87,7 +92,7 @@ public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
         List<String> nameList = new ArrayList<String>();
         List<List<Double>> valuesList = new ArrayList<List<Double>>();
 
-        List<Timestamp> optionsLists = Util.getTimeRange(Timestamp.valueOf("2015-12-15 00:00:00"), Timestamp.valueOf("2015-12-15 23:59:59"));
+        List<Timestamp> optionsLists = DateUtils.getTimeRange(Timestamp.valueOf("2015-12-15 00:00:00"), Timestamp.valueOf("2015-12-15 23:59:59"));
         for (Timestamp timestamp : optionsLists) {
             String timeStr = new SimpleDateFormat("HH").format(timestamp);
             optionTimeStrList.add(timeStr);
@@ -113,7 +118,7 @@ public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
             List<FlightInfo> flightInfoListValues = flightInfoMap.get(key);
             Timestamp timeStart = Timestamp.valueOf(key + " 00:00:00");
             Timestamp timeEnd = Timestamp.valueOf(key + " 23:59:59");
-            List<Timestamp> timestampList = Util.getTimeRange(timeStart, timeEnd);
+            List<Timestamp> timestampList = DateUtils.getTimeRange(timeStart, timeEnd);
             List<Double> flightPrice = new ArrayList<Double>();
             for (Timestamp timestamp : timestampList) {//循环24小时
                 boolean isAdd = false;
@@ -135,6 +140,12 @@ public class CtripCrawlFlightInfoOneHourseServlet extends HttpServlet {
         json.put("optionTime", optionTimeStrList);//查询时间(小时)集合
         json.put("departureTime", nameList);//起飞时间（天）集合
         json.put("prices", valuesList);//价格数组套数组集合
+
+        json.put("optiontime",optiontime);
+        json.put("departuretime",departuretime);
+        json.put("landingcityStr",landingcityStr);
+        json.put("departureCityStr",departureCityStr);
+
         ToBeJsonUtil.writeJson(json, request, response);
 
     }

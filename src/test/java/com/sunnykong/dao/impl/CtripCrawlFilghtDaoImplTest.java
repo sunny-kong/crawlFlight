@@ -3,6 +3,7 @@ package com.sunnykong.dao.impl;
 import com.sunnykong.bean.AirPortCity;
 import com.sunnykong.bean.FlightInfo;
 import com.sunnykong.dao.CrawlFlightDao;
+import com.sunnykong.utils.DateUtils;
 import com.sunnykong.utils.MapToBeanUtil;
 import com.sunnykong.utils.Util;
 import org.junit.Test;
@@ -151,7 +152,7 @@ public class CtripCrawlFilghtDaoImplTest {
                 flightInfo.setOptiontime(Timestamp.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(flightInfo.getOptiontime())));
             }
 
-            List<Timestamp> timeRange = Util.getTimeRange(Timestamp.valueOf(optionStartTime), Timestamp.valueOf(optionEndTime));
+            List<Timestamp> timeRange = DateUtils.getTimeRange(Timestamp.valueOf(optionStartTime), Timestamp.valueOf(optionEndTime));
 
             for (Timestamp timestamp : timeRange) {
 //                System.out.println(timestamp);
@@ -212,7 +213,7 @@ public class CtripCrawlFilghtDaoImplTest {
             List<FlightInfo> flightInfoListValues = flightInfoMap.get(key);
             Timestamp timeStart = Timestamp.valueOf(key + " 00:00:00");
             Timestamp timeEnd = Timestamp.valueOf(key + " 23:59:59");
-            List<Timestamp> timestampList = Util.getTimeRange(timeStart, timeEnd);
+            List<Timestamp> timestampList = DateUtils.getTimeRange(timeStart, timeEnd);
             System.out.println("@@@@@@@@@@@@" + timestampList);
             System.out.println("-------------------------------------");
             List<Double> flightPrice = new ArrayList<Double>();
@@ -244,7 +245,7 @@ public class CtripCrawlFilghtDaoImplTest {
         List<String> nameList = new ArrayList<String>();
         List<List<Double>> valuesList = new ArrayList<List<Double>>();
 
-        List<Timestamp> optionsLists = Util.getTimeRange(Timestamp.valueOf("2015-12-15 00:00:00"), Timestamp.valueOf("2015-12-15 23:59:59"));
+        List<Timestamp> optionsLists = DateUtils.getTimeRange(Timestamp.valueOf("2015-12-15 00:00:00"), Timestamp.valueOf("2015-12-15 23:59:59"));
         for (Timestamp timestamp : optionsLists) {
             String timeStr = new SimpleDateFormat("HH").format(timestamp);
             optionTimeStrList.add(timeStr);

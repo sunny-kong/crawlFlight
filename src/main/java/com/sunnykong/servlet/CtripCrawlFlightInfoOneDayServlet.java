@@ -6,9 +6,11 @@ import com.sunnykong.service.CrawlFlightService;
 import com.sunnykong.service.impl.CtripCrawlFlightServiceImpl;
 import com.sunnykong.utils.ToBeJsonUtil;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -29,6 +31,7 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
     //    String timeStr="2016-02-05";
     String[] dataArry1 = new String[]{"2016-02-01", "2016-02-02", "2016-02-03", "2016-02-04", "2016-02-05", "2016-02-06", "2016-02-07"};
     String[] dataArry2 = new String[]{"2016-02-13", "2016-02-14", "2016-02-15", "2016-02-16"};
+
     public void init() {
         timer1.schedule(new TimerTask() {
             @Override
@@ -37,7 +40,7 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
                 for (String date : dataArry1) {
                     List<FlightInfo> flightInfoList = null;
                     try {
-                        flightInfoList = crawlFlightService.crawl(AirPortCity.HET,AirPortCity.URC, date);
+                        flightInfoList = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, date);
                         System.out.println(flightInfoList);
                         for (FlightInfo flightInfo : flightInfoList) {
                             crawlFlightService.saveFlightInfo(flightInfo);
@@ -58,7 +61,7 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
                 for (String date : dataArry2) {
                     List<FlightInfo> flightInfoList = null;
                     try {
-                        flightInfoList = crawlFlightService.crawl(AirPortCity.URC,AirPortCity.HET,  date);
+                        flightInfoList = crawlFlightService.crawl(AirPortCity.URC, AirPortCity.HET, date);
                         System.out.println(flightInfoList);
                         for (FlightInfo flightInfo : flightInfoList) {
                             crawlFlightService.saveFlightInfo(flightInfo);
@@ -74,11 +77,12 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
         }, currentTime, 3600 * 1000L);
     }
 
-    public void service(HttpServletRequest request, HttpServletResponse response) {
-        String landingcity=request.getParameter("landingcity");
-        String departurecity=request.getParameter("departurecity");
-        AirPortCity departureCity= Enum.valueOf(AirPortCity.class, departurecity.trim());
-        AirPortCity landingCity=Enum.valueOf(AirPortCity.class, landingcity.trim());
+    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String landingcity = request.getParameter("landingcity");
+        String departurecity = request.getParameter("departurecity");
+        String departuretime = request.getParameter("departuretime");
+        AirPortCity departureCity = Enum.valueOf(AirPortCity.class, departurecity.trim());
+        AirPortCity landingCity = Enum.valueOf(AirPortCity.class, landingcity.trim());
         //获取数据库中的起飞时间以及操作时间 yyyy-MM-dd
         List<Timestamp> optionTimeList = crawlFlightService.findOptionTimes(departureCity);
         List<Timestamp> departureTimeList = crawlFlightService.findDepartureTimes();
@@ -91,9 +95,9 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
                 String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
                 String departureStartTime = sdf1.format(departureTime);
                 String departureEndTime = sdf2.format(departureTime) + " 23:59:59";
-                List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(departureCity, landingCity,optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+                List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(departureCity, landingCity, optionStartTime, optionEndTime, departureStartTime, departureEndTime);
 
-                if(flightInfoList.size()>0){
+                if (flightInfoList.size() > 0) {
                     Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
                         @Override
                         public int compare(FlightInfo o1, FlightInfo o2) {
@@ -144,7 +148,16 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
         json.put("optionTime", optionTimeStrList);//查询时间集合
         json.put("departureTime", departureTimeStrList);//起飞时间集合
         json.put("prices", prices);//价格数组套数组集合
+
+        json.put("departuretime", departuretime);
+        json.put("departurecity", departurecity);
+        json.put("landingcity", landingcity);
         ToBeJsonUtil.writeJson(json, request, response);
+
+       /* HttpSession session = request.getSession();
+        session.setAttribute("departurecity", departurecity);
+        session.setAttribute("landingcity", landingcity);
+        request.getRequestDispatcher("showCtripFlightInfoOneDay.jsp").forward(request,response);*/
 
     }
 }

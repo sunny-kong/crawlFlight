@@ -19,7 +19,15 @@
       }
     });
     $.getJSON('/ctripcrawlonedayservlet?<%=request.getQueryString()%>', function (json) {
+      if(json.departurecity=="HET"){
+        $("h3").append("起飞时间：2016-02-01 到2016-02-07,出发城市："+json.departurecity+",到达城市："+json.landingcity+"统计时间段:  ,指定一周每天机票最低价曲线");
+      }else{
+        $("h3").append("起飞时间：2016-02-13 到2016-02-16,出发城市："+json.departurecity+",到达城市："+json.landingcity+"统计时间段:  ,指定4天每天机票最低价曲线");
+      }
+
       showCompareEchart(json.optionTime, json.prices, json.departureTime);
+
+      $("#button").append("<button type='button'  onclick='history.go(-1)'>返回</button>");
     });
 
     function showCompareEchart(optionTime, prices, departureTime) {//显示图表
@@ -78,7 +86,19 @@
                         name: departureTime[i],
                         type: 'line',
 //                                        itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                        data: prices[i]
+                        data: prices[i],
+
+                        markPoint : {
+                          data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                          ]
+                        }/*,
+                        markLine : {
+                          data : [
+                            {type : 'average', name: '平均值'}
+                          ]
+                        }*/
                       }
                       serie.push(item);
                     }
@@ -96,13 +116,11 @@
 </head>
 
 <body>
-<%--<form>
-  起飞时间：<input type="text" name="departuretime" value=""><br>
-  操作时间：<input type="text" name="optiontime" value=""><br>
-  <input type="radio"> 某一天 <input type="radio">全部
-
-</form>--%>
+<h3 style="margin-left: 400px">
+</h3>
 <div id="chart" style="width: 750px;height: 500px;margin: 0 auto;"></div>
+<div id="button" style="margin-left: 50%"></div>
 </body>
 </html>
+
 

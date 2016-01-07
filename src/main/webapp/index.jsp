@@ -39,7 +39,8 @@
     <div class="form-group">
         <div class="input-group">
             <label class="col-md-12 control-label"> 选择查询日期</label>
-           <div class="input-group-addon">
+
+            <div class="input-group-addon">
                 <i class="fa fa-clock-o"></i>
             </div>
             <input type="text" class="form-control form_date pull-right"
@@ -50,6 +51,7 @@
     <div class="form-group">
         <div class="input-group">
             <label class="col-md-12 control-label"> 选择出发日期</label>
+
             <div class="input-group-addon">
                 <i class="fa fa-clock-o"></i>
             </div>
@@ -60,34 +62,37 @@
     </div>
     <div class="form-group">
         <label class="col-md-2 control-label" style="margin-right: 120px"> 选择出发城市</label>
-        <select class="selectpicker col-md-12" id="departurecity" name="departurecity"
-                data-style=" form-control"
-                data-width="60%">
+        <select title="请选择出发城市" id="departurecity" name="departurecity" data-style="form-control"
+                style="margin-right: 43px;width: 60%;padding:7px 0">
             <option value="HET">呼和浩特</option>
             <option value="URC">乌鲁木齐</option>
         </select>
     </div>
 
     <div class="form-group">
-        <label class="col-md-2 control-label" style="margin-right: 120px"> 选择降落城市</label>
-        <select class="selectpicker col-md-12" id="landingcity" name="landingcity"
-                data-style=" form-control"
-                data-width="60%">
+        <label class="col-md-2 control-label" style="margin-right: 120px"> 选择到达城市</label>
+        <select title="请选择到达城市" id="landingcity" name="landingcity" data-style="form-control"
+                style="margin-right: 43px;width: 60%;padding:7px 0">
             <option value="HET">呼和浩特</option>
             <option value="URC">乌鲁木齐</option>
         </select>
     </div>
 
     <div class="form-group" style="margin-left: 150px">
-        <button type="button" class="btn btn-success" onclick="findByday()" style="margin-left: 100px">&nbsp;按日查询</button>
-        <button type="button" class="btn btn-success" onclick="findByWeek()" style="margin-left: 50px">&nbsp;按周查询</button>
+        <button type="button" class="btn btn-success" onclick="findByday()" style="margin-left: 100px">&nbsp;按日查询
+        </button>
+        <button type="button" class="btn btn-success" onclick="findByWeek()" style="margin-left: 50px">&nbsp;按周查询
+        </button>
         <button type="button" class="btn btn-success" onclick="showInfo()" style="margin-left: 50px">&nbsp;航班信息</button>
     </div>
 
     <div class="form-group">
-        <div id="data" style="height: 500px"></div>
+        <div class="col-sm-14">
+            <span id="data"></span>
+        </div>
     </div>
-    </div>
+
+</div>
 </body>
 
 <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
@@ -101,12 +106,14 @@
 <script type="text/javascript" src="plugins/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 
 <script type="text/javascript">
+
     $(function () {
+        $(".datetimepicker.datetimepicker-dropdown-bottom-right.dropdown-menu:eq(0)").remove();//删除多余的时间插件框
         //Date range picker
         $('#optiontimeRange').daterangepicker({
                     language: 'zh-CN',
                     format: 'YYYY-MM-DD', //控件中from和to 显示的日期格式
-                    separator: ' to ',
+                    separator: '~',
                     locale: {
                         applyLabel: '确定',
                         cancelLabel: '取消',
@@ -153,9 +160,10 @@
 </script>
 <script type="text/javascript">
     function findByWeek() {
+        var departuretime = $("#departuretime").val();
         var departurecity = $("#departurecity").val();
         var landingcity = $("#landingcity").val();
-        window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneDay.jsp?departurecity=" + departurecity + "&landingcity=" + landingcity;
+        window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneDay.jsp?departurecity=" + departurecity + "&landingcity=" + landingcity + "&departuretime=" + departuretime;
     }
     function findByday() {
         var optiontime = $("#optiontimeRange").val();
@@ -165,23 +173,30 @@
         window.location.href = "<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showCtripFlightInfoOneHourse.jsp?optiontime=" + optiontime + "&departuretime=" + departuretime + "&departurecity=" + departurecity + "&landingcity=" + landingcity;
     }
     function showInfo() {
-        alert(formatDate(new Date()))
-        $.getJSON("<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showFlightInfo", function (json) {
+        $("#data").empty();
+        var optiontime = $("#optiontimeRange").val();
+        var departuretime = $("#departuretime").val();
+        var departurecity = $("#departurecity").val();
+        var landingcity = $("#landingcity").val();
+
+        $.getJSON("<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showFlightInfo?optiontime=" + optiontime + "&departuretime=" + departuretime + "&departurecity=" + departurecity + "&landingcity=" + landingcity, function (json) {
             var flightInfoList = json.flightInfoList;
-//            alert(flightInfoList);
             var str;
             if (flightInfoList.length > 0) {
-                str += "<table><thead><tr><td>航班号</td><td>起飞时间</td><td>降落时间</td><td>票价</td><td>起飞地点</td><td>降落地点</td><td>操作时间</td> <td>来源</td> </tr> </thead><tbody>";
+                str = "<div class=\"accordion-group\"><table class=\"table table-hover table-condensed\"><thead><tr><th class=\"alert alert-success\">共找到" + flightInfoList.length + "条数据</th></tr></thead></table>"
+                str += "<table class=\"table table-hover table-condensed\"><thead><tr><td>航班号</td><td>起飞时间</td><td>降落时间</td><td>票价</td><td>起飞地点</td><td>降落地点</td><td>操作时间</td> <td>来源</td> </tr> </thead><tbody>";
                 for (var i = 0; i < flightInfoList.length; i++) {
                     str += "<tr><td>" + flightInfoList[i].flightNo + "</td><td>" + flightInfoList[i].departuretime + "</td><td>" + flightInfoList[i].landingtime + "</td><td>" + flightInfoList[i].price + "</td><td>" + flightInfoList[i].departurecity + "</td><td>" + flightInfoList[i].landingcity + "</td><td>" + flightInfoList[i].optiontime + "</td><td>" + flightInfoList[i].parentname + "</td></tr>"
                 }
-                str += "</tbody></table>";
+                str += "</tbody></table></div>";
             } else {
-                str += "<thead><tr>未找到数据，请更换条件重试</tr></thead>";
+                str = "<div class=\"accordion-group\"><table class=\"table table-hover table-condensed\"><thead><tr><th class=\"alert alert-danger\">没有找到数据 :(</th></tr></thead></table></div>";
+
             }
             $("#data").append(str);
-
         });
+
+
     }
 
 
