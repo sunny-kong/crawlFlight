@@ -91,7 +91,9 @@
             <span id="data"></span>
         </div>
     </div>
-
+    <div id="flightInfodiv" class="box-footer clearfix">
+        <%--显示分页信息--%>
+    </div>
 </div>
 </body>
 
@@ -104,7 +106,7 @@
 <script src="plugins/timepicker/bootstrap-timepicker.min.js" type="text/javascript"></script>
 <script src="js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="plugins/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
-
+<script type="text/javascript" src="js/bootstrap-paginator.js"></script>
 <script type="text/javascript">
 
     $(function () {
@@ -179,26 +181,63 @@
         var departurecity = $("#departurecity").val();
         var landingcity = $("#landingcity").val();
 
-        $.getJSON("<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showFlightInfo?optiontime=" + optiontime + "&departuretime=" + departuretime + "&departurecity=" + departurecity + "&landingcity=" + landingcity, function (json) {
-            var flightInfoList = json.flightInfoList;
-            var str;
-            if (flightInfoList.length > 0) {
-                str = "<div class=\"accordion-group\"><table class=\"table table-hover table-condensed\"><thead><tr><th class=\"alert alert-success\">共找到" + flightInfoList.length + "条数据</th></tr></thead></table>"
-                str += "<table class=\"table table-hover table-condensed\"><thead><tr><td>航班号</td><td>起飞时间</td><td>降落时间</td><td>票价</td><td>起飞地点</td><td>降落地点</td><td>操作时间</td> <td>来源</td> </tr> </thead><tbody>";
+        $.getJSON("<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showFlightInfo", {
+            optiontime: optiontime,
+            departuretime: departuretime,
+            departurecity: departurecity,
+            landingcity: landingcity,
+            page: 1
+        }, function (json) {
+            if (json.flightInfoListTotal.length > 0) {
+
+                //分页显示设置
+                var options = {
+                    currentPage: json.page.pageNo,
+                    totalPages: json.page.pageSize,
+                    numberOfPages: json.page.pageSize,
+                    onPageChanged: function (event, oldPage, newPage) {
+                        $.getJSON("<%=StringUtils.substringBeforeLast(request.getRequestURL().toString(),"/")%>/showFlightInfo", {
+                            optiontime: optiontime,
+                            departuretime: departuretime,
+                            departurecity: departurecity,
+                            landingcity: landingcity,
+                            page: newPage
+                        }, function (json) {
+
+                            alert(1);
+                            var scriptInfoList = json.flightInfoList;
+                            $("#data").empty();
+                            var str = "<div class=\"accordion-group\"><table class=\"table table-hover table-condensed\"><thead><tr><th class=\"alert alert-success\">共找到" + json.flightInfoListTotal.length + "条数据</th></tr></thead></table>"
+                            str += "<table class=\"table table-hover table-condensed\"><thead><tr><td>ID</td><td>航班号</td><td>起飞时间</td><td>降落时间</td><td>票价</td><td>起飞地点</td><td>降落地点</td><td>操作时间</td> <td>来源</td> </tr> </thead><tbody>";
+                            for (var i = 0; i < flightInfoList.length; i++) {
+                                str += "<tr><td>" + flightInfoList[i].id + "</td><td>" + flightInfoList[i].flightNo + "</td><td>" + flightInfoList[i].departuretime + "</td><td>" + flightInfoList[i].landingtime + "</td><td>" + flightInfoList[i].price + "</td><td>" + flightInfoList[i].departurecity + "</td><td>" + flightInfoList[i].landingcity + "</td><td>" + flightInfoList[i].optiontime + "</td><td>" + flightInfoList[i].parentname + "</td></tr>"
+                            }
+                            str += "</tbody></table></div>";
+                            $("#data").append(str);
+
+                        });
+                    }
+                }
+
+                //显示
+                var flightInfoList = json.flightInfoList;
+                var str = "<div class=\"accordion-group\"><table class=\"table table-hover table-condensed\"><thead><tr><th class=\"alert alert-success\">共找到" + json.flightInfoListTotal.length + "条数据</th></tr></thead></table>";
+                str += "<table class=\"table table-hover table-condensed\"><thead><tr><td>ID</td><td>航班号</td><td>起飞时间</td><td>降落时间</td><td>票价</td><td>起飞地点</td><td>降落地点</td><td>操作时间</td> <td>来源</td> </tr> </thead><tbody>";
                 for (var i = 0; i < flightInfoList.length; i++) {
-                    str += "<tr><td>" + flightInfoList[i].flightNo + "</td><td>" + flightInfoList[i].departuretime + "</td><td>" + flightInfoList[i].landingtime + "</td><td>" + flightInfoList[i].price + "</td><td>" + flightInfoList[i].departurecity + "</td><td>" + flightInfoList[i].landingcity + "</td><td>" + flightInfoList[i].optiontime + "</td><td>" + flightInfoList[i].parentname + "</td></tr>"
+                    str += "<tr><td>" + flightInfoList[i].id + "</td><td>" + flightInfoList[i].flightNo + "</td><td>" + flightInfoList[i].departuretime + "</td><td>" + flightInfoList[i].landingtime + "</td><td>" + flightInfoList[i].price + "</td><td>" + flightInfoList[i].departurecity + "</td><td>" + flightInfoList[i].landingcity + "</td><td>" + flightInfoList[i].optiontime + "</td><td>" + flightInfoList[i].parentname + "</td></tr>"
                 }
                 str += "</tbody></table></div>";
+                $("#data").append(str);
+
+                $('#flightInfodiv').bootstrapPaginator(options);
+
+
             } else {
-                str = "<div class=\"accordion-group\"><table class=\"table table-hover table-condensed\"><thead><tr><th class=\"alert alert-danger\">没有找到数据 :(</th></tr></thead></table></div>";
-
+                var str = "<div class=\"accordion-group\"><table class=\"table table-hover table-condensed\"><thead><tr><th class=\"alert alert-danger\">没有找到数据 :(</th></tr></thead></table></div>";
+                $("#data").append(str);
             }
-            $("#data").append(str);
         });
-
-
     }
-
 
 </script>
 </html>
