@@ -203,9 +203,7 @@
                             landingcity: landingcity,
                             page: newPage
                         }, function (json) {
-
-                            alert(1);
-                            var scriptInfoList = json.flightInfoList;
+                            flightInfoList = json.flightInfoList;
                             $("#data").empty();
                             var str = "<div class=\"accordion-group\"><table class=\"table table-hover table-condensed\"><thead><tr><th class=\"alert alert-success\">共找到" + json.flightInfoListTotal.length + "条数据</th></tr></thead></table>"
                             str += "<table class=\"table table-hover table-condensed\"><thead><tr><td>ID</td><td>航班号</td><td>起飞时间</td><td>降落时间</td><td>票价</td><td>起飞地点</td><td>降落地点</td><td>操作时间</td> <td>来源</td> </tr> </thead><tbody>";

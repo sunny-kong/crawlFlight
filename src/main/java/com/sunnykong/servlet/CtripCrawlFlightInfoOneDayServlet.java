@@ -16,6 +16,8 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.sunnykong.bean.AirPortCity.*;
 
@@ -33,27 +35,59 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
     String[] dataArry2 = new String[]{"2016-02-13", "2016-02-14", "2016-02-15", "2016-02-16"};
 
     public void init() {
+   /*     timer1.schedule(new TimerTask() {
+            @Override
+            public void run() {
+//                System.out.println("保存呼和浩特到乌鲁木齐的机票信息------------------------------");
+                ExecutorService pool = Executors.newFixedThreadPool(3);
+                for (final String date : dataArry1) {
+                    Thread thread= new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<FlightInfo> flightInfoList = null;
+                            try {
+                                flightInfoList = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, date);
+                                System.out.println(flightInfoList);
+                                for (FlightInfo flightInfo : flightInfoList) {
+                                    crawlFlightService.saveFlightInfo(flightInfo);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                    pool.execute(thread);
+                }
+            }
+        }, currentTime, 3600 * 1000L);*/
+
         timer1.schedule(new TimerTask() {
             @Override
             public void run() {
 //                System.out.println("保存呼和浩特到乌鲁木齐的机票信息------------------------------");
                 for (String date : dataArry1) {
-                    List<FlightInfo> flightInfoList = null;
-                    try {
-                        flightInfoList = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, date);
-                        System.out.println(flightInfoList);
-                        for (FlightInfo flightInfo : flightInfoList) {
-                            crawlFlightService.saveFlightInfo(flightInfo);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
 
-                }
+                            List<FlightInfo> flightInfoList = null;
+                            try {
+                                flightInfoList = crawlFlightService.crawl(AirPortCity.HET, AirPortCity.URC, date);
+                                System.out.println(flightInfoList);
+                                for (FlightInfo flightInfo : flightInfoList) {
+                                    crawlFlightService.saveFlightInfo(flightInfo);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
             }
         }, currentTime, 3600 * 1000L);
+
         timer2.schedule(new TimerTask() {
             @Override
             public void run() {
