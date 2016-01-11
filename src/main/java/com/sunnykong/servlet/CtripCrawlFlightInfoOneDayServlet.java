@@ -18,8 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.sunnykong.bean.AirPortCity.*;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -64,7 +63,7 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
             }
         }, currentTime, 3600 * 1000L);*/
 
-        timer1.schedule(new TimerTask() {
+/*        timer1.schedule(new TimerTask() {
             @Override
             public void run() {
 //                System.out.println("保存呼和浩特到乌鲁木齐的机票信息------------------------------");
@@ -108,20 +107,68 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
 
                 }
             }
-        }, currentTime, 3600 * 1000L);
+        }, currentTime, 3600 * 1000L);*/
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String landingcity = request.getParameter("landingcity");
         String departurecity = request.getParameter("departurecity");
         String departuretime = request.getParameter("departuretime");
-        AirPortCity departureCity = Enum.valueOf(AirPortCity.class, departurecity.trim());
+
+
+        final AirPortCity departureCity = Enum.valueOf(AirPortCity.class, departurecity.trim());
+        final AirPortCity landingCity = Enum.valueOf(AirPortCity.class, landingcity.trim());
+        //获取数据库中的起飞时间以及操作时间 yyyy-MM-dd
+        List<Timestamp> optionTimeList = crawlFlightService.findOptionTimes(departureCity);
+        final List<Timestamp> departureTimeList = crawlFlightService.findDepartureTimes();
+        final List<FlightInfo> flightInfoListlowPrice = new ArrayList<FlightInfo>();
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+        long start = System.currentTimeMillis();
+        for (final Timestamp optionTime : optionTimeList) {
+            pool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    for (Timestamp departureTime : departureTimeList) {
+                        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+                        String optionStartTime = sdf1.format(optionTime);
+                        String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
+                        String departureStartTime = sdf1.format(departureTime);
+                        String departureEndTime = sdf2.format(departureTime) + " 23:59:59";
+                        List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(departureCity, landingCity, optionStartTime, optionEndTime, departureStartTime, departureEndTime);
+                        if (flightInfoList.size() > 0) {
+                            Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
+                                @Override
+                                public int compare(FlightInfo o1, FlightInfo o2) {
+                                    return (int) (o1.getPrice() - o2.getPrice());
+                                }
+                            });
+                            flightInfoListlowPrice.add(flightInfoList.get(0));
+                        }
+                    }
+                }
+            });
+
+        }
+        pool.shutdown();
+        while (!pool.isTerminated()) {
+            try {
+                pool.awaitTermination(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(System.currentTimeMillis() - start);
+
+
+ /*       AirPortCity departureCity = Enum.valueOf(AirPortCity.class, departurecity.trim());
         AirPortCity landingCity = Enum.valueOf(AirPortCity.class, landingcity.trim());
         //获取数据库中的起飞时间以及操作时间 yyyy-MM-dd
         List<Timestamp> optionTimeList = crawlFlightService.findOptionTimes(departureCity);
         List<Timestamp> departureTimeList = crawlFlightService.findDepartureTimes();
         List<FlightInfo> flightInfoListlowPrice = new ArrayList<FlightInfo>();
-        for (Timestamp optionTime : optionTimeList) {
+        long start=System.currentTimeMillis();
+        for (final Timestamp optionTime : optionTimeList) {
             for (Timestamp departureTime : departureTimeList) {
                 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
@@ -130,7 +177,6 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
                 String departureStartTime = sdf1.format(departureTime);
                 String departureEndTime = sdf2.format(departureTime) + " 23:59:59";
                 List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(departureCity, landingCity, optionStartTime, optionEndTime, departureStartTime, departureEndTime);
-
                 if (flightInfoList.size() > 0) {
                     Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
                         @Override
@@ -140,9 +186,10 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
                     });
                     flightInfoListlowPrice.add(flightInfoList.get(0));
                 }
-
             }
         }
+        System.out.println(System.currentTimeMillis()-start);
+*/
 
         List<String> optionTimeStrList = new ArrayList<String>();
         List<String> departureTimeStrList = new ArrayList<String>();
@@ -187,11 +234,6 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
         json.put("departurecity", departurecity);
         json.put("landingcity", landingcity);
         ToBeJsonUtil.writeJson(json, request, response);
-
-       /* HttpSession session = request.getSession();
-        session.setAttribute("departurecity", departurecity);
-        session.setAttribute("landingcity", landingcity);
-        request.getRequestDispatcher("showCtripFlightInfoOneDay.jsp").forward(request,response);*/
 
     }
 }

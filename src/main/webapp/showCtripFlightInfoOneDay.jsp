@@ -20,9 +20,9 @@
     });
     $.getJSON('/ctripcrawlonedayservlet?<%=request.getQueryString()%>', function (json) {
       if(json.departurecity=="HET"){
-        $("h3").append("起飞时间：2016-02-01 到2016-02-07,出发城市："+json.departurecity+",到达城市："+json.landingcity+"统计时间段:  ,指定一周每天机票最低价曲线");
+        $("h3").append("起飞时间：2016-02-01 到2016-02-07,出发城市："+json.departurecity+",到达城市："+json.landingcity+"统计时间段: 2015-12-15~2016-01-11 ,指定一周每天机票最低价曲线");
       }else{
-        $("h3").append("起飞时间：2016-02-13 到2016-02-16,出发城市："+json.departurecity+",到达城市："+json.landingcity+"统计时间段:  ,指定4天每天机票最低价曲线");
+        $("h3").append("起飞时间：2016-02-13 到2016-02-16,出发城市："+json.departurecity+",到达城市："+json.landingcity+"统计时间段: 2015-12-29~2016-01-11 ,指定4天每天机票最低价曲线");
       }
 
       showCompareEchart(json.optionTime, json.prices, json.departureTime);

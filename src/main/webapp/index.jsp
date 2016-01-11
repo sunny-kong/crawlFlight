@@ -46,6 +46,8 @@
             <input type="text" class="form-control form_date pull-right"
                    id="optiontimeRange" placeholder="区间"
                    value="<%=DateUtils.getPreviousMonth()%>"/>
+           <%-- <input type="text" class="form-control form_date pull-right"
+                   id="optiontimeRange" placeholder="区间(2015-12-15~2016-01-11)"/>--%>
         </div>
     </div>
     <div class="form-group">
