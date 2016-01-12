@@ -114,8 +114,6 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
         String landingcity = request.getParameter("landingcity");
         String departurecity = request.getParameter("departurecity");
         String departuretime = request.getParameter("departuretime");
-
-
         final AirPortCity departureCity = Enum.valueOf(AirPortCity.class, departurecity.trim());
         final AirPortCity landingCity = Enum.valueOf(AirPortCity.class, landingcity.trim());
         //获取数据库中的起飞时间以及操作时间 yyyy-MM-dd
@@ -160,47 +158,16 @@ public class CtripCrawlFlightInfoOneDayServlet extends HttpServlet {
         }
         System.out.println(System.currentTimeMillis() - start);
 
-
- /*       AirPortCity departureCity = Enum.valueOf(AirPortCity.class, departurecity.trim());
-        AirPortCity landingCity = Enum.valueOf(AirPortCity.class, landingcity.trim());
-        //获取数据库中的起飞时间以及操作时间 yyyy-MM-dd
-        List<Timestamp> optionTimeList = crawlFlightService.findOptionTimes(departureCity);
-        List<Timestamp> departureTimeList = crawlFlightService.findDepartureTimes();
-        List<FlightInfo> flightInfoListlowPrice = new ArrayList<FlightInfo>();
-        long start=System.currentTimeMillis();
-        for (final Timestamp optionTime : optionTimeList) {
-            for (Timestamp departureTime : departureTimeList) {
-                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-                String optionStartTime = sdf1.format(optionTime);
-                String optionEndTime = sdf2.format(optionTime) + " 23:59:59";
-                String departureStartTime = sdf1.format(departureTime);
-                String departureEndTime = sdf2.format(departureTime) + " 23:59:59";
-                List<FlightInfo> flightInfoList = crawlFlightService.findFlightInfoByOptionTimeAndDepartureTime(departureCity, landingCity, optionStartTime, optionEndTime, departureStartTime, departureEndTime);
-                if (flightInfoList.size() > 0) {
-                    Collections.sort(flightInfoList, new Comparator<FlightInfo>() {
-                        @Override
-                        public int compare(FlightInfo o1, FlightInfo o2) {
-                            return (int) (o1.getPrice() - o2.getPrice());
-                        }
-                    });
-                    flightInfoListlowPrice.add(flightInfoList.get(0));
-                }
-            }
-        }
-        System.out.println(System.currentTimeMillis()-start);
-*/
-
         List<String> optionTimeStrList = new ArrayList<String>();
         List<String> departureTimeStrList = new ArrayList<String>();
         List<List<Double>> prices = new ArrayList<List<Double>>();
-//将Timestamp类型的optionTime转换为String
+        //将Timestamp类型的optionTime转换为String
         for (Timestamp optionTime : optionTimeList) {
             String optionTimeStr = new SimpleDateFormat("yyyy-MM-dd").format(optionTime);
             optionTimeStrList.add(optionTimeStr);
         }
 
-//构建{{"02-01",List<FlightInfo>,"02-02",List<FlightInfo>,"02-03",List<FlightInfo>}} 这样的map集合，LinkedHashMap有序的
+        //构建{{"02-01",List<FlightInfo>,"02-02",List<FlightInfo>,"02-03",List<FlightInfo>}} 这样的map集合，LinkedHashMap有序的
         Map<String, List<FlightInfo>> flightMap = new LinkedHashMap<String, List<FlightInfo>>();
         for (FlightInfo flightInfo : flightInfoListlowPrice) {
             //起飞时间
